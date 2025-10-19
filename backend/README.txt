@@ -5,7 +5,7 @@ pip install uvicorn
 
 uvicorn - it's a server btw
 
-uvocorn main:app --reload  - to start the server
+uvicorn main:app --reload  - to start the server
 
 -------------------------||----------------------------
 
