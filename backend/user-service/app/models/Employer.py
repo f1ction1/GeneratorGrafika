@@ -2,6 +2,9 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Text
 from sqlalchemy.orm import relationship
 from db import Base
 
+# import User to reference its employer_id column for disambiguation
+from models.User import User  # local import to avoid circular import issues at package import time
+
 class Employer(Base):
     __tablename__ = "employers"
     id = Column(Integer, primary_key=True, index=True)
@@ -13,6 +16,6 @@ class Employer(Base):
                     )
 
     # relationships
-    users = relationship("User", back_populates="employer", cascade="all, delete-orphan")
+    users = relationship("User",back_populates="employer",cascade="all, delete-orphan",foreign_keys=[User.employer_id])
     employees = relationship("Employee", back_populates="employer", cascade="all, delete-orphan")
-    owner = relationship("User", foreign_keys=[owner_id]) 
+    owner = relationship("User", foreign_keys=[owner_id])
