@@ -13,6 +13,10 @@ class Employer(Base):
                     )
 
     # relationships
-    users = relationship("User", back_populates="employer", cascade="all, delete-orphan")
+
+    #list of users (note: on delete company we set users.employer_id to NULL;
+    users = relationship("User", back_populates="employer", cascade="all, delete-orphan", foreign_keys="[User.employer_id]")
     employees = relationship("Employee", back_populates="employer", cascade="all, delete-orphan")
-    owner = relationship("User", foreign_keys=[owner_id]) 
+
+    # owner: use post_update to allow circular creation without manual two-step
+    owner = relationship("User", foreign_keys=[owner_id], post_update=True) 
