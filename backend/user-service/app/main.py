@@ -1,6 +1,6 @@
-from fastapi import FastAPI, HTTPException, Depends
-from pydantic import BaseModel # for data validation
+from fastapi import FastAPI
 from db import engine, Base
+from api.routers import employer
 
 app = FastAPI(title="User Service API")
 Base.metadata.create_all(bind=engine)
@@ -8,3 +8,5 @@ Base.metadata.create_all(bind=engine)
 @app.get("/")
 def root():
     return {"Hello": "World"}
+
+app.include_router(employer.router)
