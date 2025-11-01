@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Numeric, Text
 from sqlalchemy.orm import relationship
-from db import Base
+from user_service.db import Base
 from .Employer import Employer
 
 

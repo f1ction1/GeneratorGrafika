@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from db import get_db
-from schemas.employer import EmployerCreate
-from services.employer_service import EmployerService
-from core.security import get_current_user
-from models import User, Employer
+from user_service.db import get_db
+from user_service.schemas.employer import EmployerCreate
+from user_service.services.employer_service import EmployerService
+from user_service.core.security import get_current_user
+from user_service.models import User, Employer
 
 router = APIRouter(
     prefix="/employer",

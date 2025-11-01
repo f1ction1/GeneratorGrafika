@@ -1,7 +1,8 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
-import models
-from schemas import employer
+from user_service import models
+
+from user_service.schemas import employer
 
 class EmployerService:
     def __init__(self, db: Session):
