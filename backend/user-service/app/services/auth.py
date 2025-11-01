@@ -17,10 +17,10 @@ def register_user(db: Session, req: RegisterRequest) -> str:
     hashed = hash_password(req.password)
     user = User(
         email=req.email,
-        first_name="",
-        last_name="",
+        first_name=req.first_name,   # <-- use value from request
+        last_name=req.last_name,     # <-- use value from request
         password=hashed,
-        role=getattr(req, "role", None) or "user",
+        role=req.role,               # <-- use value from request
         employer_id=None
     )
     db.add(user)

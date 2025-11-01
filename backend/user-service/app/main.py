@@ -1,5 +1,5 @@
-from fastapi import FastAPI, Depends
-from db import engine, Base, get_db
+from fastapi import FastAPI
+from db import engine, Base
 from sqlalchemy.orm import Session
 
 # Import model modules so their classes are defined and mappers can be configured.
@@ -7,16 +7,14 @@ import models.User
 import models.Employer
 import models.Employee
 
-from schemas.auth import RegisterRequest, TokenResponse
-from services.auth import register_user
+# import and register routers
+from routes import auth as auth_routes
 
 app = FastAPI(title="User Service API")
 Base.metadata.create_all(bind=engine)
 
-@app.post("/register", response_model=TokenResponse)
-def register(req: RegisterRequest, db: Session = Depends(get_db)):
-    token = register_user(db, req)
-    return {"access_token": token}
+# register auth routes under /auth
+app.include_router(auth_routes.router, prefix="/auth", tags=["auth"])
 
 @app.get("/")
 def root():
