@@ -3,15 +3,78 @@ import './Auth.css';
 
 function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    firstName: '',
+    lastName: '',
+    confirmPassword: ''
+  });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const toggleMode = () => {
     setIsLogin(!isLogin);
+    setError('');
   };
 
-  const handleSubmit = (e) => {
+  const handleInputChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value
+    });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Tutaj będzie logika logowania/rejestracji
-    console.log(isLogin ? 'Logowanie' : 'Rejestracja');
+    setError('');
+    setLoading(true);
+
+    if (!isLogin) {
+      if (formData.password !== formData.confirmPassword) {
+        setError('Hasła nie pasują do siebie');
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const response = await fetch('http://localhost:8000/auth/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: formData.email,
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            password: formData.password,
+            role: 'owner'
+          })
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.detail || 'Rejestracja nie powiodła się');
+        }
+
+        const data = await response.json();
+        console.log('Zarejestrowano pomyślnie, token:', data.access_token);
+        
+        
+        localStorage.setItem('token', data.access_token);
+        
+        window.location.href = '/dashboard';
+        
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    } else {
+
+      console.log('Logowanie');
+      setLoading(false);
+    }
   };
 
   return (
@@ -36,6 +99,18 @@ function AuthPage() {
           </div>
 
           <form className="auth-form" onSubmit={handleSubmit}>
+            {error && (
+              <div className="error-message" style={{
+                padding: '10px',
+                backgroundColor: '#fee',
+                color: '#c33',
+                borderRadius: '4px',
+                marginBottom: '15px'
+              }}>
+                {error}
+              </div>
+            )}
+            
             {!isLogin && (
               <>
                 <div className="form-group">
@@ -44,6 +119,8 @@ function AuthPage() {
                     type="text" 
                     id="firstName" 
                     placeholder="Jan"
+                    value={formData.firstName}
+                    onChange={handleInputChange}
                     required={!isLogin}
                   />
                 </div>
@@ -53,6 +130,8 @@ function AuthPage() {
                     type="text" 
                     id="lastName" 
                     placeholder="Kowalski"
+                    value={formData.lastName}
+                    onChange={handleInputChange}
                     required={!isLogin}
                   />
                 </div>
@@ -65,6 +144,8 @@ function AuthPage() {
                 type="email" 
                 id="email" 
                 placeholder="twoj@email.com"
+                value={formData.email}
+                onChange={handleInputChange}
                 required
               />
             </div>
@@ -75,6 +156,8 @@ function AuthPage() {
                 type="password" 
                 id="password" 
                 placeholder="••••••••"
+                value={formData.password}
+                onChange={handleInputChange}
                 required
               />
             </div>
@@ -86,6 +169,8 @@ function AuthPage() {
                   type="password" 
                   id="confirmPassword" 
                   placeholder="••••••••"
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
                   required={!isLogin}
                 />
               </div>
@@ -101,8 +186,8 @@ function AuthPage() {
               </div>
             )}
 
-            <button type="submit" className="btn btn-primary btn-full">
-              {isLogin ? 'Zaloguj się' : 'Zarejestruj się'}
+            <button type="submit" className="btn btn-primary btn-full" disabled={loading}>
+              {loading ? 'Ładowanie...' : (isLogin ? 'Zaloguj się' : 'Zarejestruj się')}
             </button>
           </form>
 
