@@ -3,7 +3,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import HomePage from './pages/Home';
 import ProfilePage from './pages/Profile';
 import EmployerPage from './pages/Employer';
-import EmployeesPage from './pages/Employee';
+import EmployeesPage from './pages/Employees';
 import RootLoyout from './pages/Root';
 import SchedulePage from './pages/Schedule';
 
