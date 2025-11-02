@@ -4,7 +4,7 @@ from db import get_db
 from schemas.employer import EmployerCreate
 from services.employer_service import EmployerService
 from core.security import get_current_user
-from models import User, Employer
+from models import User
 
 router = APIRouter(
     prefix="/employer",
