@@ -1,4 +1,6 @@
 import './Home.css';
+import { FaRocket, FaSliders, FaChartLine } from 'react-icons/fa6';
+import { Link } from 'react-router-dom';
 
 function HomePage() {
   return (
@@ -16,31 +18,37 @@ function HomePage() {
             <span className="highlight"> harmonogramów</span>
           </h1>
           <p className="hero-subtitle">
-            plcaholder
+            Generuj optymalne plany pracy w kilka sekund — oszczędzaj czas, unikaj konfliktów i maksymalizuj wykorzystanie zasobów.
           </p>
           <div className="cta-buttons">
-            <button className="btn btn-primary">Zacznij Teraz</button>
+            <Link to="/auth" className="btn btn-primary">Zacznij Teraz</Link>
             <button className="btn btn-secondary">Dowiedz się więcej</button>
           </div>
         </header>
 
         <section className="features-section">
           <div className="feature-card">
-            <div className="feature-icon"></div>
-            <h3>1</h3>
-            <p>test</p>
+            <div className="feature-icon">
+              <FaRocket size={40} />
+            </div>
+            <h3>Szybka optymalizacja</h3>
+            <p>Generuj harmonogramy w kilka sekund z uwzględnieniem dostępności, priorytetów i kompetencji.</p>
           </div>
           
           <div className="feature-card">
-            <div className="feature-icon"></div>
-            <h3>2</h3>
-            <p>test</p>
+            <div className="feature-icon">
+              <FaSliders size={40} />
+            </div>
+            <h3>Elastyczne reguły</h3>
+            <p>Dodaj urlopy, ograniczenia godzinowe, umiejętności i preferencje — system uwzględni je automatycznie.</p>
           </div>
           
           <div className="feature-card">
-            <div className="feature-icon"></div>
-            <h3>3</h3>
-            <p>test</p>
+            <div className="feature-icon">
+              <FaChartLine size={40} />
+            </div>
+            <h3>Wgląd i raporty</h3>
+            <p>Analizy wykorzystania zasobów, wykrywanie konfliktów i rekomendacje do poprawy grafiku.</p>
           </div>
         </section>
       </div>
