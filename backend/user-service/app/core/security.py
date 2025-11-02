@@ -9,6 +9,10 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "super-secret-change-me")
 def hash_password(password: str) -> str:
     return hmac.new(SECRET_KEY.encode(), password.encode(), hashlib.sha256).hexdigest()
 
+def verify_password(password: str, hashed: str) -> bool:
+    # porównanie odporne na timing attacks
+    return hmac.compare_digest(hash_password(password), hashed)
+
 def _base64url_encode(data: bytes) -> str:
     return base64.urlsafe_b64encode(data).rstrip(b"=").decode()
 

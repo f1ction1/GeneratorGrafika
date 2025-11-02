@@ -8,6 +8,10 @@ class RegisterRequest(BaseModel):
     password_confirm: str
     role:str
 
+class LoginRequest(BaseModel):
+    email: EmailStr
+    password: str
+
 class TokenResponse(BaseModel):
     access_token: str
-    
+
