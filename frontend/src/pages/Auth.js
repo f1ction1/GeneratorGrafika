@@ -31,7 +31,7 @@ function AuthPage() {
             <p className="auth-subtitle">
               {isLogin 
                 ? 'Zaloguj się, aby kontynuować' 
-                : 'Stwórz konto i zacznij korzystać z AI'}
+                : 'Stwórz konto i zacznij korzystać z Schedulr'}
             </p>
           </div>
 

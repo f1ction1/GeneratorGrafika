@@ -12,8 +12,8 @@ function HomePage() {
       <div className="content-wrapper">
         <header className="hero-section">
           <h1 className="hero-title">
-            Inteligentne Generowanie
-            <span className="highlight"> Harmonogramów</span>
+            Inteligentne generowanie
+            <span className="highlight"> harmonogramów</span>
           </h1>
           <p className="hero-subtitle">
             plcaholder

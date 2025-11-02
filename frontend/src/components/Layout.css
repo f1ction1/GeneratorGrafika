@@ -1,0 +1,28 @@
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main-area {
+  margin-left: 260px;
+  width: calc(100% - 260px);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
+}
+
+.content-area {
+  padding: 0;
+  background: #ebedef;
+  flex: 1 1 auto;
+  overflow-y: auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .main-area {
+    margin-left: 0;
+    width: 100%;
+  }
+}
