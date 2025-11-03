@@ -4,14 +4,14 @@ from sqlalchemy.orm import Session
 from db import get_db
 from models.User import User
 import os
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import HTTPBearer
 
 SECRET_KEY = os.environ.get("SECRET_KEY", "super-secret-change-me")
 ALGORITHM = "HS256"
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
+bearer_scheme = HTTPBearer()
 
 
-def get_current_user(token: str= Depends(oauth2_scheme), db: Session = Depends(get_db)):
+def get_current_user(token: str= Depends(bearer_scheme), db: Session = Depends(get_db)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -28,3 +28,15 @@ def get_current_user(token: str= Depends(oauth2_scheme), db: Session = Depends(g
     if user is None:
         raise credentials_exception
     return user
+
+class RoleChecker:
+    def __init__(self, allowed_roles: list[str]):
+        self.allowed_roles = allowed_roles
+
+    def __call__(self, user: User = Depends(get_current_user)):
+        if user.role not in self.allowed_roles:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Not enough permissions"
+            )
+        return user
