@@ -22,9 +22,9 @@ class EmployerService:
         user.employer_id = employer.id
         self.db.commit()
 
-    def get_employer(self, id: int):
-        employer = self.db.query(models.Employer).filter(models.Employer.id == id).first()
+    def get_employer(self, user: models.User):
+        employer = self.db.query(models.Employer).filter(models.Employer.id == user.employer_id).first()
         if not employer:
-            raise HTTPException(status_code=404, detail='Employer is not found')
+            raise HTTPException(status_code=404, detail='Employer is not found for the given user')
         
         return EmployerBase(name=employer.name, address=employer.address)

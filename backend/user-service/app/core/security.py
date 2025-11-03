@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from db import get_db
 from models.User import User
 import os
-from fastapi.security import HTTPBearer
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 import hmac
 import hashlib
 import base64
@@ -15,13 +15,14 @@ ALGORITHM = "HS256"
 bearer_scheme = HTTPBearer()
 
 
-def get_current_user(token: str= Depends(bearer_scheme), db: Session = Depends(get_db)):
+def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme), db: Session = Depends(get_db)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
+        token = credentials.credentials
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         user_id: int = payload.get("id")
         if user_id is None:
