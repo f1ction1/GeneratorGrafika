@@ -6,7 +6,7 @@
 .table {
   width: 100%;
   margin-bottom: 1rem;
-  color: #4f5d73;
+  color: var(--text-primary);
   border-collapse: collapse;
 }
 
@@ -14,21 +14,21 @@
 .table td {
   padding: 0.75rem;
   vertical-align: top;
-  border-top: 1px solid #d8dbe0;
+  border-top: 1px solid var(--border-color);
 }
 
 .table thead th {
   vertical-align: bottom;
-  border-bottom: 2px solid #d8dbe0;
+  border-bottom: 2px solid var(--border-color);
   font-weight: 600;
-  background-color: #f3f4f7;
-  color: #4f5d73;
+  background-color: var(--bg-hover);
+  color: var(--text-primary);
   font-size: 0.875rem;
   text-transform: uppercase;
 }
 
 .table tbody + tbody {
-  border-top: 2px solid #d8dbe0;
+  border-top: 2px solid var(--border-color);
 }
 
 /* Table sizes */
@@ -49,12 +49,12 @@
 
 /* Striped rows */
 .table-striped tbody tr:nth-of-type(odd) {
-  background-color: rgba(0, 0, 21, 0.02);
+  background-color: var(--bg-hover);
 }
 
 /* Hover effect */
 .table-hover tbody tr:hover {
-  background-color: rgba(0, 0, 21, 0.04);
+  background-color: var(--bg-hover);
   cursor: pointer;
 }
 

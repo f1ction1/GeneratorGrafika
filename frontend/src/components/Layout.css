@@ -14,7 +14,7 @@
 
 .content-area {
   padding: 0;
-  background: #ebedef;
+  background: var(--bg-body);
   flex: 1 1 auto;
   overflow-y: auto;
 }

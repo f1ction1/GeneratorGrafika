@@ -10,11 +10,16 @@ import {
   FaChevronDown,
   FaChevronRight,
   FaBars,
-  FaTimes
+  FaTimes,
+  FaSignOutAlt,
+  FaMoon,
+  FaSun
 } from 'react-icons/fa';
+import { useTheme } from '../context/ThemeContext';
 import './Sidebar.css';
 
 function Sidebar() {
+  const { theme, toggleTheme, isDark } = useTheme();
   const [isOpen, setIsOpen] = useState(true);
   const [openSections, setOpenSections] = useState({
     management: true,
@@ -30,6 +35,13 @@ function Sidebar() {
       ...prev,
       [section]: !prev[section]
     }));
+  };
+
+  const handleLogout = () => {
+    // Usuń token z localStorage
+    localStorage.removeItem('token');
+    // Przekieruj na stronę logowania
+    window.location.href = '/auth';
   };
 
   return (
@@ -83,59 +95,27 @@ function Sidebar() {
                   <FaCalendarAlt className="nav-icon" />
                   {isOpen && <span>Schedule</span>}
                 </NavLink>
-                
-                <NavLink to="/dashboard/company" className="nav-item nav-subitem">
-                  <FaBuilding className="nav-icon" />
-                  {isOpen && <span>Company</span>}
-                </NavLink>
               </div>
             )}
           </div>
 
-          {/* Reports Section */}
-          <div className="nav-section">
-            <div 
-              className="nav-section-header" 
-              onClick={() => toggleSection('reports')}
-            >
-              {isOpen && <span>Reports & Analytics</span>}
-              {isOpen && (
-                openSections.reports ? 
-                  <FaChevronDown className="section-icon" /> : 
-                  <FaChevronRight className="section-icon" />
-              )}
-            </div>
-            
-            {openSections.reports && (
-              <div className="nav-section-content">
-                <NavLink to="/dashboard/reports" className="nav-item nav-subitem">
-                  <FaChartBar className="nav-icon" />
-                  {isOpen && <span>Reports</span>}
-                </NavLink>
-              </div>
-            )}
-          </div>
+          
+  
 
-          {/* Settings */}
-          <div className="nav-divider"></div>
-          <NavLink to="/dashboard/settings" className="nav-item">
-            <FaCog className="nav-icon" />
-            {isOpen && <span>Settings</span>}
-          </NavLink>
+          {/* Theme Toggle Button */}
+          <button onClick={toggleTheme} className="nav-item theme-toggle-button" title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}>
+            {isDark ? <FaSun className="nav-icon" /> : <FaMoon className="nav-icon" />}
+            {isOpen && <span>{isDark ? 'Light Mode' : 'Dark Mode'}</span>}
+          </button>
+
+          {/* Logout Button */}
+          <button onClick={handleLogout} className="nav-item logout-button">
+            <FaSignOutAlt className="nav-icon" />
+            {isOpen && <span>Wyloguj</span>}
+          </button>
         </nav>
 
-        {/* Sidebar Footer */}
-        {isOpen && (
-          <div className="sidebar-footer">
-            <div className="user-info">
-              <div className="user-avatar">JD</div>
-              <div className="user-details">
-                <div className="user-name">John Doe</div>
-                <div className="user-role">Administrator</div>
-              </div>
-            </div>
-          </div>
-        )}
+      
       </aside>
 
       {/* Overlay for mobile */}

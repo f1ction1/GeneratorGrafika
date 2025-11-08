@@ -3,7 +3,7 @@
   height: 1rem;
   overflow: hidden;
   font-size: 0.75rem;
-  background-color: #d8dbe0;
+  background-color: var(--border-color-light);
   border-radius: 0.375rem;
   margin-bottom: 1rem;
 }
@@ -36,29 +36,29 @@
   font-weight: 600;
 }
 
-/* Color variants */
+/* Color variants - Nowy theme */
 .bg-primary {
-  background-color: #321fdb;
+  background: var(--gradient-primary);
 }
 
 .bg-success {
-  background-color: #2eb85c;
+  background-color: var(--color-success);
 }
 
 .bg-warning {
-  background-color: #f9b115;
+  background-color: var(--color-warning);
 }
 
 .bg-danger {
-  background-color: #e55353;
+  background-color: var(--color-danger);
 }
 
 .bg-info {
-  background-color: #39f;
+  background-color: var(--color-info);
 }
 
 .bg-dark {
-  background-color: #636f83;
+  background-color: var(--color-dark);
 }
 
 /* Striped variant */

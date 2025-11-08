@@ -5,109 +5,128 @@
  * No need to touch the component code!
  */
 
-// Theme Colors - Customize your color palette
+// Theme Colors - Dopasowane do strony startowej
 export const THEME_COLORS = {
-  primary: '#321fdb',
-  success: '#2eb85c',
-  warning: '#f9b115',
-  danger: '#e55353',
-  info: '#39f',
-  dark: '#636f83',
-  light: '#ebedef',
+  primary: '#11998e',      // Główny zielony
+  success: '#38ef7d',      // Jasny zielony
+  warning: '#fda085',      // Pomarańczowy
+  danger: '#e55353',       // Czerwony (kontrast)
+  info: '#4facfe',         // Niebieski
+  dark: '#2c3e50',         // Ciemny granat
+  light: '#ebedef',        // Jasny szary
+  gradient: 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)', // Główny gradient
 };
 
 // Dashboard Settings
 export const DASHBOARD_CONFIG = {
   // Page settings
-  title: 'Dashboard',
-  subtitle: "Welcome back! Here's what's happening today.",
+  title: 'Panel Główny',
+  subtitle: 'Witaj! Oto podsumowanie twojej firmy.',
   
   // Layout
   refreshButton: true,
   responsiveBreakpoint: 992, // px - when to switch to mobile layout
   
   // Auto-refresh (in milliseconds, set to 0 to disable)
-  autoRefresh: 0, // e.g., 30000 for 30 seconds
+  autoRefresh: 0, // e.g., 60000 for 1 minute
 };
 
-// Stats Configuration - Customize your stat cards
+// Stats Configuration - Kluczowe statystyki dla pracodawcy
 export const STATS_CONFIG = [
   {
-    id: 'users',
-    title: 'Użytkownicy',
-    value: '1,234',
+    id: 'employees',
+    title: 'Pracownicy',
+    value: '24',
     color: 'primary',
-    icon: 'FaUsers', // React Icons name
-    change: '+12.5',
+    icon: 'FaUsers',
+    change: '+2',
     inverse: false,
     enabled: true,
   },
   {
-    id: 'tasks',
-    title: 'Zadania',
-    value: '76',
+    id: 'today-shifts',
+    title: 'Dzisiejsze zmiany',
+    value: '8',
     color: 'success',
-    icon: 'FaTasks',
-    change: '+8.2',
+    icon: 'FaCalendarAlt',
+    change: '0',
     inverse: false,
     enabled: true,
   },
   {
-    id: 'performance',
-    title: 'Wydajność',
-    value: '92%',
-    color: 'info',
-    icon: 'FaChartLine',
-    change: '+3.1',
-    inverse: false,
-    enabled: true,
-  },
-  {
-    id: 'errors',
-    title: 'Błędy',
+    id: 'pending-requests',
+    title: 'Oczekujące wnioski',
     value: '3',
+    color: 'warning',
+    icon: 'FaClipboardList',
+    change: '+1',
+    inverse: false,
+    enabled: true,
+  },
+  {
+    id: 'unassigned-shifts',
+    title: 'Nieobsadzone zmiany',
+    value: '2',
     color: 'danger',
     icon: 'FaExclamationTriangle',
-    change: '-15.3',
-    inverse: false,
+    change: '-1',
+    inverse: true,
     enabled: true,
   },
 ];
 
-// Progress Bars Configuration
+// Progress Bars Configuration - Obsadzenie zmian w tygodniu
 export const PROGRESS_CONFIG = [
   {
-    id: 'server',
-    label: 'Server Load',
-    value: 45,
-    color: 'primary',
-    animated: true,
-    striped: true,
+    id: 'monday',
+    label: 'Poniedziałek',
+    value: 100,
+    color: 'success',
+    animated: false,
+    striped: false,
     enabled: true,
   },
   {
-    id: 'disk',
-    label: 'Disk Usage',
-    value: 78,
+    id: 'tuesday',
+    label: 'Wtorek',
+    value: 100,
+    color: 'success',
+    animated: false,
+    striped: false,
+    enabled: true,
+  },
+  {
+    id: 'wednesday',
+    label: 'Środa',
+    value: 87,
     color: 'warning',
     animated: true,
     striped: true,
     enabled: true,
   },
   {
-    id: 'memory',
-    label: 'Memory Usage',
-    value: 62,
-    color: 'info',
+    id: 'thursday',
+    label: 'Czwartek',
+    value: 75,
+    color: 'warning',
     animated: true,
     striped: true,
     enabled: true,
   },
   {
-    id: 'cpu',
-    label: 'CPU Usage',
-    value: 34,
-    color: 'success',
+    id: 'friday',
+    label: 'Piątek',
+    value: 62,
+    color: 'danger',
+    animated: true,
+    striped: true,
+    enabled: true,
+  },
+  {
+    id: 'saturday',
+    label: 'Sobota',
+    value: 50,
+    color: 'danger',
     animated: true,
     striped: true,
     enabled: true,
@@ -117,11 +136,10 @@ export const PROGRESS_CONFIG = [
 // Widget Visibility - Enable/disable widgets
 export const WIDGET_VISIBILITY = {
   stats: true,
-  systemPerformance: true,
-  recentProjects: true,
+  weeklyScheduleCoverage: true,
+  upcomingShifts: true,
   recentActivity: true,
-  quickStats: true,
-  additionalInfo: true,
+  quickActions: true,
 };
 
 // Table Configuration
@@ -140,30 +158,30 @@ export const ACTIVITY_CONFIG = {
   showUserAvatar: false,
 };
 
-// Quick Stats Configuration
+// Quick Stats Configuration - Dodatkowe statystyki
 export const QUICK_STATS_CONFIG = [
   {
-    id: 'revenue',
-    label: 'Total Revenue',
-    value: '$45,678',
+    id: 'total-hours',
+    label: 'Godziny w tym miesiącu',
+    value: '1,248',
     enabled: true,
   },
   {
-    id: 'customers',
-    label: 'New Customers',
-    value: '234',
+    id: 'active-employees',
+    label: 'Aktywni pracownicy',
+    value: '22',
     enabled: true,
   },
   {
-    id: 'orders',
-    label: 'Pending Orders',
-    value: '18',
+    id: 'completed-shifts',
+    label: 'Zrealizowane zmiany',
+    value: '156',
     enabled: true,
   },
   {
-    id: 'tickets',
-    label: 'Support Tickets',
-    value: '7',
+    id: 'pending-approvals',
+    label: 'Do zatwierdzenia',
+    value: '5',
     enabled: true,
   },
 ];

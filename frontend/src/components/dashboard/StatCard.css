@@ -55,73 +55,73 @@
   justify-content: center;
 }
 
-/* Color variants */
+/* Color variants - Nowy theme */
 .stat-card-primary {
-  background: linear-gradient(45deg, #321fdb, #4938e5);
+  background-color: var(--color-primary);
   color: white;
 }
 
 .stat-card-success {
-  background: linear-gradient(45deg, #2eb85c, #3dd569);
+  background-color: var(--color-success);
   color: white;
 }
 
 .stat-card-warning {
-  background: linear-gradient(45deg, #f9b115, #ffbd33);
+  background-color: var(--color-warning);
   color: white;
 }
 
 .stat-card-danger {
-  background: linear-gradient(45deg, #e55353, #ff6b6b);
+  background-color: var(--color-danger);
   color: white;
 }
 
 .stat-card-info {
-  background: linear-gradient(45deg, #39f, #5ea8ff);
+  background-color: var(--color-info);
   color: white;
 }
 
 .stat-card-dark {
-  background: linear-gradient(45deg, #636f83, #768192);
+  background-color: var(--color-dark);
   color: white;
 }
 
 /* Inverse variant (white background with colored text) */
 .stat-card-inverse {
-  background: white;
+  background: var(--card-bg);
   border-left: 4px solid;
 }
 
 .stat-card-inverse.stat-card-primary {
-  border-left-color: #321fdb;
-  color: #321fdb;
+  border-left-color: var(--color-primary);
+  color: var(--color-primary);
 }
 
 .stat-card-inverse.stat-card-success {
-  border-left-color: #2eb85c;
-  color: #2eb85c;
+  border-left-color: var(--color-success);
+  color: var(--color-success);
 }
 
 .stat-card-inverse.stat-card-warning {
-  border-left-color: #f9b115;
-  color: #f9b115;
+  border-left-color: var(--color-warning);
+  color: var(--color-warning);
 }
 
 .stat-card-inverse.stat-card-danger {
-  border-left-color: #e55353;
-  color: #e55353;
+  border-left-color: var(--color-danger);
+  color: var(--color-danger);
 }
 
 .stat-card-inverse.stat-card-info {
-  border-left-color: #39f;
-  color: #39f;
+  border-left-color: var(--color-info);
+  color: var(--color-info);
 }
 
 .stat-card-inverse.stat-card-dark {
-  border-left-color: #636f83;
-  color: #636f83;
+  border-left-color: var(--color-dark);
+  color: var(--color-dark);
 }
 
 .stat-card-inverse .stat-card-title {
-  color: #768192;
+  color: var(--text-secondary);
 }

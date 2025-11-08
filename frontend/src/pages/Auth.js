@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './Auth.css';
 
 function AuthPage() {
@@ -12,6 +12,15 @@ function AuthPage() {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // Sprawdź czy użytkownik jest już zalogowany
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      // Jeśli token istnieje, przekieruj do dashboard
+      window.location.href = '/dashboard';
+    }
+  }, []);
 
   const toggleMode = () => {
     setIsLogin(!isLogin);
@@ -30,14 +39,15 @@ function AuthPage() {
     setError('');
     setLoading(true);
 
-    if (!isLogin) {
-      if (formData.password !== formData.confirmPassword) {
-        setError('Hasła nie pasują do siebie');
-        setLoading(false);
-        return;
-      }
+    try {
+      if (!isLogin) {
+        // Rejestracja
+        if (formData.password !== formData.confirmPassword) {
+          setError('Hasła nie pasują do siebie');
+          setLoading(false);
+          return;
+        }
 
-      try {
         const response = await fetch('http://localhost:8000/auth/register', {
           method: 'POST',
           headers: {
@@ -48,6 +58,7 @@ function AuthPage() {
             first_name: formData.firstName,
             last_name: formData.lastName,
             password: formData.password,
+            password_confirm: formData.confirmPassword,
             role: 'owner'
           })
         });
@@ -60,19 +71,36 @@ function AuthPage() {
         const data = await response.json();
         console.log('Zarejestrowano pomyślnie, token:', data.access_token);
         
-        
         localStorage.setItem('token', data.access_token);
-        
         window.location.href = '/dashboard';
         
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    } else {
+      } else {
+        // Logowanie
+        const response = await fetch('http://localhost:8000/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: formData.email,
+            password: formData.password
+          })
+        });
 
-      console.log('Logowanie');
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.detail || 'Logowanie nie powiodło się');
+        }
+
+        const data = await response.json();
+        console.log('Zalogowano pomyślnie, token:', data.access_token);
+        
+        localStorage.setItem('token', data.access_token);
+        window.location.href = '/dashboard';
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
       setLoading(false);
     }
   };

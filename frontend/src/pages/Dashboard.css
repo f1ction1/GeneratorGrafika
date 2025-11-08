@@ -1,8 +1,10 @@
 /* Dashboard Layout */
 .dashboard-page {
   padding: 1.5rem;
-  background-color: #ebedef;
+  background-color: var(--bg-body);
   min-height: 100vh;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 /* Page Header */
@@ -10,20 +12,20 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .page-title {
   margin: 0;
-  font-size: 1.75rem;
+  font-size: 2rem;
   font-weight: 600;
-  color: #4f5d73;
+  color: var(--text-primary);
 }
 
 .page-subtitle {
-  margin: 0.25rem 0 0 0;
-  color: #768192;
-  font-size: 0.875rem;
+  margin: 0.5rem 0 0 0;
+  color: var(--text-secondary);
+  font-size: 1rem;
 }
 
 .dashboard-actions {
@@ -36,7 +38,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1.5rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 @media (max-width: 768px) {
@@ -45,163 +47,110 @@
   }
 }
 
-/* Dashboard Grid Layout */
-.dashboard-row {
+/* Dashboard Actions Grid - dla pracodawcy */
+.dashboard-actions-grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1.5rem;
-  margin-bottom: 1.5rem;
+  padding: 1rem 0;
 }
 
-@media (min-width: 992px) {
-  .dashboard-row {
-    grid-template-columns: 2fr 1fr;
+@media (max-width: 768px) {
+  .dashboard-actions-grid {
+    grid-template-columns: 1fr;
   }
 }
 
-.dashboard-col-8,
-.dashboard-col-4 {
+.action-card {
+  background: var(--card-bg);
+  border: 2px solid var(--border-color);
+  border-radius: 0.5rem;
+  padding: 2rem 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-}
-
-/* Progress Items */
-.progress-item {
-  margin-bottom: 1.25rem;
-}
-
-.progress-item:last-child {
-  margin-bottom: 0;
-}
-
-.progress-header {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 0.75rem;
+}
+
+.action-card:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-primary);
+}
+
+.action-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--gradient-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  color: white;
+  margin-bottom: 0.5rem;
+  box-shadow: var(--shadow-primary);
+}
+
+.action-card h3 {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.action-card p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* Next Shift Card - dla pracownika */
+.next-shift-card {
+  text-align: center;
+  padding: 1.5rem;
+}
+
+.shift-date {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  color: #768192;
   margin-bottom: 0.5rem;
 }
 
-.progress-label {
-  font-weight: 600;
-  font-size: 0.875rem;
-  color: #4f5d73;
+.shift-date svg {
+  font-size: 1.25rem;
+  color: var(--color-primary);
 }
 
-.progress-value {
+.shift-time {
+  font-size: 2.5rem;
   font-weight: 700;
-  font-size: 0.875rem;
-  color: #768192;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
 }
 
-/* Activity Feed */
-.activity-feed {
+.shift-details {
   display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.activity-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #ebedef;
-}
-
-.activity-item:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
-}
-
-.activity-indicator {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  margin-top: 0.25rem;
-  flex-shrink: 0;
-}
-
-.activity-indicator.activity-success {
-  background-color: #2eb85c;
-}
-
-.activity-indicator.activity-info {
-  background-color: #39f;
-}
-
-.activity-indicator.activity-warning {
-  background-color: #f9b115;
-}
-
-.activity-indicator.activity-danger {
-  background-color: #e55353;
-}
-
-.activity-content {
-  flex: 1;
-}
-
-.activity-user {
-  font-weight: 600;
-  font-size: 0.875rem;
-  color: #4f5d73;
-  margin-bottom: 0.125rem;
-}
-
-.activity-action {
-  font-size: 0.875rem;
-  color: #768192;
-  margin-bottom: 0.25rem;
-}
-
-.activity-time {
-  font-size: 0.75rem;
-  color: #b1b7c1;
-}
-
-/* Quick Stats */
-.quick-stats {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.quick-stat-item {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 0.75rem;
-  background-color: #f9f9fb;
-  border-radius: 0.375rem;
-  transition: all 0.15s ease-in-out;
+  justify-content: center;
+  gap: 1rem;
+  font-size: 1rem;
+  color: var(--text-secondary);
 }
 
-.quick-stat-item:hover {
-  background-color: #f3f4f7;
-  transform: translateX(4px);
-}
-
-.quick-stat-label {
-  font-size: 0.875rem;
-  color: #768192;
-  font-weight: 500;
-}
-
-.quick-stat-value {
-  font-size: 1.125rem;
-  font-weight: 700;
-  color: #4f5d73;
-}
-
-/* Code styling */
-code {
-  background-color: #f3f4f7;
-  padding: 0.125rem 0.375rem;
-  border-radius: 0.25rem;
-  font-family: 'Courier New', monospace;
-  font-size: 0.875em;
-  color: #e55353;
+/* Quick Actions Employee */
+.quick-actions-employee {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 /* Utility classes */

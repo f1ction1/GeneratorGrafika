@@ -61,7 +61,6 @@ function EmployeesPage() {
     { key: 'name', label: 'Name' },
     { key: 'email', label: 'Email' },
     { key: 'position', label: 'Position' },
-    { key: 'department', label: 'Department' },
     { 
       key: 'status', 
       label: 'Status',
@@ -108,7 +107,6 @@ function EmployeesPage() {
       name: 'Jan Kowalski',
       email: 'jan.kowalski@company.com',
       position: 'Senior Developer',
-      department: 'IT',
       status: 'Active',
       hireDate: '2023-01-15'
     },
@@ -117,7 +115,6 @@ function EmployeesPage() {
       name: 'Anna Nowak',
       email: 'anna.nowak@company.com',
       position: 'Project Manager',
-      department: 'Management',
       status: 'Active',
       hireDate: '2022-06-10'
     },
@@ -126,7 +123,6 @@ function EmployeesPage() {
       name: 'Piotr Wiśniewski',
       email: 'piotr.wisniewski@company.com',
       position: 'Designer',
-      department: 'Design',
       status: 'On Leave',
       hireDate: '2023-03-20'
     },
@@ -135,7 +131,6 @@ function EmployeesPage() {
       name: 'Maria Wójcik',
       email: 'maria.wojcik@company.com',
       position: 'HR Specialist',
-      department: 'HR',
       status: 'Active',
       hireDate: '2021-09-05'
     },
@@ -144,7 +139,6 @@ function EmployeesPage() {
       name: 'Tomasz Kamiński',
       email: 'tomasz.kaminski@company.com',
       position: 'Marketing Manager',
-      department: 'Marketing',
       status: 'Active',
       hireDate: '2022-11-12'
     },
@@ -153,7 +147,6 @@ function EmployeesPage() {
       name: 'Katarzyna Lewandowska',
       email: 'katarzyna.lewandowska@company.com',
       position: 'Junior Developer',
-      department: 'IT',
       status: 'Active',
       hireDate: '2024-08-01'
     },
@@ -162,7 +155,6 @@ function EmployeesPage() {
       name: 'Michał Zieliński',
       email: 'michal.zielinski@company.com',
       position: 'Sales Representative',
-      department: 'Sales',
       status: 'Inactive',
       hireDate: '2020-04-18'
     },
@@ -171,7 +163,6 @@ function EmployeesPage() {
       name: 'Agnieszka Szymańska',
       email: 'agnieszka.szymanska@company.com',
       position: 'Accountant',
-      department: 'Finance',
       status: 'Active',
       hireDate: '2023-02-28'
     },
@@ -199,7 +190,7 @@ function EmployeesPage() {
     const matchesSearch = searchTerm === '' || 
       emp.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       emp.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      emp.department.toLowerCase().includes(searchTerm.toLowerCase());
+      emp.position.toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesStatus = filterStatus === 'all' || emp.status === filterStatus;
     
@@ -240,7 +231,7 @@ function EmployeesPage() {
             <FaSearch className="search-icon" />
             <input
               type="text"
-              placeholder="Search employees by name, email, or department..."
+              placeholder="Search employees by name, email, or position..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="search-input"
@@ -275,30 +266,7 @@ function EmployeesPage() {
       {/* Department Summary */}
       <div className="dashboard-row">
         <div className="dashboard-col-8">
-          <Card header="Department Distribution" color="info">
-            <div className="department-stats">
-              <div className="dept-item">
-                <span className="dept-name">IT Department</span>
-                <span className="dept-count">24 employees</span>
-              </div>
-              <div className="dept-item">
-                <span className="dept-name">Sales</span>
-                <span className="dept-count">18 employees</span>
-              </div>
-              <div className="dept-item">
-                <span className="dept-name">Marketing</span>
-                <span className="dept-count">12 employees</span>
-              </div>
-              <div className="dept-item">
-                <span className="dept-name">HR</span>
-                <span className="dept-count">8 employees</span>
-              </div>
-              <div className="dept-item">
-                <span className="dept-name">Finance</span>
-                <span className="dept-count">10 employees</span>
-              </div>
-            </div>
-          </Card>
+          
         </div>
         <div className="dashboard-col-4">
           <Card header="Quick Actions" color="success">

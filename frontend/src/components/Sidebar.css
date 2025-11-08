@@ -1,8 +1,8 @@
 /* Sidebar Container */
 .sidebar {
   width: 260px;
-  background: linear-gradient(180deg, #1a1f36 0%, #0b1220 100%);
-  color: #fff;
+  background: var(--bg-sidebar);
+  color: var(--text-inverse);
   height: 100vh;
   position: fixed;
   left: 0;
@@ -13,6 +13,7 @@
   transition: all 0.3s ease-in-out;
   z-index: 1000;
   overflow-y: auto;
+  border-right: 1px solid var(--border-color);
 }
 
 .sidebar-closed {
@@ -30,7 +31,7 @@
   top: 1rem;
   left: 1rem;
   z-index: 1001;
-  background: #321fdb;
+  background: var(--gradient-primary);
   color: white;
   border: none;
   width: 40px;
@@ -39,13 +40,13 @@
   cursor: pointer;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(50, 31, 219, 0.3);
+  box-shadow: var(--shadow-primary);
   transition: all 0.15s ease;
 }
 
 .sidebar-toggle:hover {
-  background: #2818b1;
   transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(17, 153, 142, 0.3);
 }
 
 /* Sidebar Brand */
@@ -209,53 +210,44 @@
   margin: 0.75rem 1.25rem;
 }
 
-/* Sidebar Footer */
-.sidebar-footer {
-  padding: 1rem 1.25rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(0, 0, 0, 0.2);
+/* Logout Button */
+.logout-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  margin-top: auto;
 }
 
-.user-info {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+.logout-button:hover {
+  background: rgba(220, 53, 69, 0.1);
+  color: #dc3545;
 }
 
-.user-avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #321fdb 0%, #5b47f5 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-  font-size: 0.875rem;
-  flex-shrink: 0;
+/* Theme Toggle Button */
+.theme-toggle-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  margin-top: 0.5rem;
 }
 
-.user-details {
-  flex: 1;
-  min-width: 0;
+.theme-toggle-button:hover {
+  background: rgba(17, 153, 142, 0.1);
+  color: var(--color-primary-light);
 }
 
-.user-name {
-  font-weight: 600;
-  font-size: 0.875rem;
-  color: #fff;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.theme-toggle-button .nav-icon {
+  color: var(--color-primary-light);
 }
 
-.user-role {
-  font-size: 0.75rem;
-  color: #768192;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+
+
+
+
 
 /* Sidebar Overlay for Mobile */
 .sidebar-overlay {
