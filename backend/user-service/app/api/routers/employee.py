@@ -18,16 +18,16 @@ def create_employee(
 ):
     service.create_employee(user=current_user, data=payload)
 
-# @router.get("", status_code=status.HTTP_200_OK, response_model=EmployeeBase, dependencies=[Depends(RoleChecker(["owner", "manager"]))])
-# def get_employee(
-#     current_user: User = Depends(get_current_user),
-#     service: EmployeeService = Depends(get_employee_service)):
-#     employee = service.get_employee(current_user)
-#     return employee
-
-@router.get("", status_code=status.HTTP_200_OK, response_model=List[EmployeeBase], dependencies=[Depends(RoleChecker(["owner", "manager"]))])
-def get_employees(
+@router.get("", status_code=status.HTTP_200_OK, response_model=EmployeeBase, dependencies=[Depends(RoleChecker(["owner", "manager"]))])
+def get_employee(
     current_user: User = Depends(get_current_user),
     service: EmployeeService = Depends(get_employee_service)):
-    employee = service.get_employees(current_user)
+    employee = service.get_employee(current_user)
     return employee
+
+# @router.get("", status_code=status.HTTP_200_OK, response_model=List[EmployeeBase], dependencies=[Depends(RoleChecker(["owner", "manager"]))])
+# def get_employees(
+#     current_user: User = Depends(get_current_user),
+#     service: EmployeeService = Depends(get_employee_service)):
+#     employee = service.get_employees(current_user)
+#     return employee

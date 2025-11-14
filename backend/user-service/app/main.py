@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from db import engine, Base
-from api.routers import employer, auth, employee
+from api.routers import employer, auth, employee, employees
 
 app = FastAPI(title="User Service API")
 
@@ -20,6 +20,7 @@ Base.metadata.create_all(bind=engine)
 app.include_router(auth.router, prefix="/auth", tags=["auth"])
 app.include_router(employer.router)
 app.include_router(employee.router)
+app.include_router(employees.router)
 
 @app.get("/")
 def root():

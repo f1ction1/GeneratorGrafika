@@ -16,7 +16,7 @@ class EmployeeService:
             last_name=data.last_name,
             position=data.position,
             employment_fraction=data.employment_fraction,
-            employer_id=data.employer_id
+            employer_id=user.employer_id
         )
         self.db.add(employee)
         #self.db.flush()  # get id employee (without commit)
@@ -28,21 +28,21 @@ class EmployeeService:
     def get_employee(self, user: models.User):
         employee = self.db.query(models.Employee).filter(models.Employee.employer_id == user.employer_id).first()
         if not employee:
-            raise HTTPException(status_code=404, detail='Employee is not found for the given user')
+            raise HTTPException(status_code=404, detail='Employees is not found for the given user')
         
         return EmployeeBase(
             first_name=employee.first_name, 
             last_name=employee.last_name, 
             position=employee.position, 
             employment_fraction=employee.employment_fraction, 
-            employer_id=employee.employer_id
+            employer_id=user.employer_id
         )
 
     # show all employees from current user
     def get_employees(self, user: models.User):
         employees = self.db.query(models.Employee).filter(models.Employee.employer_id == user.employer_id).all()
         if not employees:
-            raise HTTPException(status_code=404, detail='Employee is not found for the given user')
+            raise HTTPException(status_code=404, detail='Employees is not found for the given user')
         
         return [
             EmployeeBase(

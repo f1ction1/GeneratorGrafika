@@ -9,3 +9,6 @@ def get_employer_service(db: Session = Depends(get_db)) -> EmployerService:
 
 def get_employee_service(db: Session = Depends(get_db)) -> EmployeeService:
     return EmployeeService(db)
+
+def get_employee_service(db: Session = Depends(get_db)) -> EmployeeService:
+    return EmployeeService(db)
