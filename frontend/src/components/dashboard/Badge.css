@@ -1,0 +1,102 @@
+.badge {
+  display: inline-block;
+  padding: 0.25em 0.5em;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.25rem;
+  transition: all 0.15s ease-in-out;
+}
+
+.badge-pill {
+  padding-right: 0.6em;
+  padding-left: 0.6em;
+  border-radius: 10rem;
+}
+
+/* Solid variants - Nowy theme */
+.badge-solid-primary {
+  color: #fff;
+  background-color: var(--color-primary);
+}
+
+.badge-solid-success {
+  color: #fff;
+  background-color: var(--color-success);
+}
+
+.badge-solid-warning {
+  color: #fff;
+  background-color: var(--color-warning);
+}
+
+.badge-solid-danger {
+  color: #fff;
+  background-color: var(--color-danger);
+}
+
+.badge-solid-info {
+  color: #fff;
+  background-color: var(--color-info);
+}
+
+.badge-solid-dark {
+  color: #fff;
+  background-color: var(--color-dark);
+}
+
+.badge-solid-secondary {
+  color: #fff;
+  background-color: var(--color-secondary);
+}
+
+.badge-solid-light {
+  color: var(--text-primary);
+  background-color: var(--color-light);
+}
+
+/* Outline variants - Nowy theme */
+.badge-outline-primary {
+  color: var(--color-primary);
+  background-color: transparent;
+  border: 1px solid var(--color-primary);
+}
+
+.badge-outline-success {
+  color: var(--color-success);
+  background-color: transparent;
+  border: 1px solid var(--color-success);
+}
+
+.badge-outline-warning {
+  color: var(--color-warning);
+  background-color: transparent;
+  border: 1px solid var(--color-warning);
+}
+
+.badge-outline-danger {
+  color: var(--color-danger);
+  background-color: transparent;
+  border: 1px solid var(--color-danger);
+}
+
+.badge-outline-info {
+  color: var(--color-info);
+  background-color: transparent;
+  border: 1px solid var(--color-info);
+}
+
+.badge-outline-dark {
+  color: var(--color-dark);
+  background-color: transparent;
+  border: 1px solid var(--color-dark);
+}
+
+.badge-outline-light {
+  color: var(--text-secondary);
+  background-color: transparent;
+  border: 1px solid var(--border-color);
+}
