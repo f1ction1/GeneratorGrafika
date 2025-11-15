@@ -8,3 +8,7 @@ class EmployerBase(BaseModel):
 class EmployerCreate(EmployerBase):
     pass
 
+class EmployerUpdate(BaseModel):
+    name: Optional[str] = None
+    address: Optional[str] = None
+

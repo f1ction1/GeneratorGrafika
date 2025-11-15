@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 import models
-from schemas.employer import EmployerCreate, EmployerBase
+from schemas.employer import EmployerCreate, EmployerBase, EmployerUpdate
 
 class EmployerService:
     def __init__(self, db: Session):
@@ -27,4 +27,23 @@ class EmployerService:
         if not employer:
             raise HTTPException(status_code=404, detail='Employer is not found for the given user')
         
+        return EmployerBase(name=employer.name, address=employer.address)
+
+    def update_employer(self, user: models.User, data: EmployerUpdate):
+        employer = self.db.query(models.Employer).filter(models.Employer.id == user.employer_id).first()
+        if not employer:
+            raise HTTPException(status_code=404, detail='Employer not found')
+        if employer.owner_id != user.id:
+            raise HTTPException(status_code=403, detail='Only owner can update employer')
+        updated = False
+        if data.name is not None:
+            employer.name = data.name
+            updated = True
+        if data.address is not None:
+            employer.address = data.address
+            updated = True
+        if not updated:
+            raise HTTPException(status_code=400, detail='No fields to update')
+        self.db.commit()
+        self.db.refresh(employer)
         return EmployerBase(name=employer.name, address=employer.address)
