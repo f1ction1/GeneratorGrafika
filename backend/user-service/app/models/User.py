@@ -12,6 +12,6 @@ class User(Base):
     last_name = Column(String, nullable=False)
     password = Column(String, nullable=False)
     role = Column(String, nullable=False)  # owner / manager / platform_admin
-    employer_id = Column(Integer, ForeignKey("employers.id", ondelete="CASCADE"), nullable=True)
+    employer_id = Column(Integer, ForeignKey("employers.id", ondelete="SET NULL"), nullable=True)
 
-    employer = relationship("Employer", back_populates="users", foreign_keys=[employer_id])
+    employer = relationship("Employer", back_populates="users", foreign_keys=[employer_id], passive_deletes=True)

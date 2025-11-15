@@ -16,8 +16,8 @@ class Employer(Base):
     # relationships
 
     #list of users (note: on delete company we set users.employer_id to NULL;
-    users = relationship("User", back_populates="employer", cascade="all, delete-orphan", foreign_keys="[User.employer_id]")
+    users = relationship("User", back_populates="employer", passive_deletes=True, foreign_keys="[User.employer_id]")
     employees = relationship("Employee", back_populates="employer", cascade="all, delete-orphan")
 
     # owner: use post_update to allow circular creation without manual two-step
-    owner = relationship("User", foreign_keys=[owner_id], post_update=True) 
+    owner = relationship("User", foreign_keys=[owner_id], post_update=True, passive_deletes=True)
