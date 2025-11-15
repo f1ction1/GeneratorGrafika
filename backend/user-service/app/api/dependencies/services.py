@@ -2,6 +2,10 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 from db import get_db
 from services.employer_service import EmployerService
+from services.user_service import UserService
 
 def get_employer_service(db: Session = Depends(get_db)) -> EmployerService:
     return EmployerService(db)
+
+def get_user_service(db: Session = Depends(get_db)) -> UserService:
+    return UserService(db)

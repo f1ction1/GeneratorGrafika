@@ -15,3 +15,8 @@ class LoginRequest(BaseModel):
 class TokenResponse(BaseModel):
     access_token: str
 
+class UserUpdate(BaseModel):
+    first_name: str
+    last_name: str
+    email: EmailStr
+
