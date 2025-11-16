@@ -1,0 +1,94 @@
+/* Theme Variables - Light Mode (Default) */
+:root {
+  /* Primary Colors */
+  --color-primary: #11998e;
+  --color-primary-dark: #0d7a6f;
+  --color-primary-light: #38ef7d;
+  
+  /* Semantic Colors */
+  --color-success: #38ef7d;
+  --color-warning: #fda085;
+  --color-danger: #e55353;
+  --color-info: #4facfe;
+  --color-dark: #2c3e50;
+  --color-light: #ebedef;
+  --color-secondary: #768192;
+  
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  --gradient-warning: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+  --gradient-info: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  --gradient-success: linear-gradient(135deg, #38ef7d 0%, #7cff9e 100%);
+  --gradient-danger: linear-gradient(135deg, #e55353 0%, #ff6b6b 100%);
+  --gradient-dark: linear-gradient(135deg, #2c3e50 0%, #3f5366 100%);
+  
+  /* Background Colors - Light Mode */
+  --bg-body: #f5f5f5;
+  --bg-surface: #ffffff;
+  --bg-elevated: #ffffff;
+  --bg-sidebar: #2c3e50;
+  --bg-hover: #f8f9fa;
+  
+  /* Text Colors - Light Mode */
+  --text-primary: #2c3e50;
+  --text-secondary: #768192;
+  --text-muted: #b1b7c1;
+  --text-inverse: #ffffff;
+  
+  /* Border Colors - Light Mode */
+  --border-color: #d8dbe0;
+  --border-color-light: #ebedef;
+  --border-color-dark: #b1b7c1;
+  
+  /* Shadow Colors - Light Mode */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+  --shadow-primary: 0 4px 15px rgba(17, 153, 142, 0.2);
+  
+  /* Component specific */
+  --card-bg: #ffffff;
+  --card-border: rgba(0, 0, 21, 0.125);
+  --input-bg: #ffffff;
+  --input-border: #d8dbe0;
+  --input-focus-border: var(--color-primary);
+}
+
+/* Dark Mode */
+[data-theme="dark"] {
+  /* Background Colors - Dark Mode */
+  --bg-body: #0a0a0f;
+  --bg-surface: #1a1a24;
+  --bg-elevated: #252536;
+  --bg-sidebar: #1a1a24;
+  --bg-hover: #2a2a3a;
+  
+  /* Text Colors - Dark Mode */
+  --text-primary: #e4e7eb;
+  --text-secondary: #b1b7c1;
+  --text-muted: #768192;
+  --text-inverse: #2c3e50;
+  
+  /* Border Colors - Dark Mode */
+  --border-color: #3a3a4a;
+  --border-color-light: #2a2a3a;
+  --border-color-dark: #4a4a5a;
+  
+  /* Shadow Colors - Dark Mode */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.5);
+  --shadow-primary: 0 4px 15px rgba(17, 153, 142, 0.4);
+  
+  /* Component specific - Dark Mode */
+  --card-bg: #1a1a24;
+  --card-border: rgba(255, 255, 255, 0.1);
+  --input-bg: #252536;
+  --input-border: #3a3a4a;
+  --input-focus-border: var(--color-primary);
+}
+
+/* Smooth theme transition */
+* {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
