@@ -7,11 +7,11 @@ from models import User
 from api.dependencies.services import get_user_service
 
 router = APIRouter(
-    prefix="/api/users",
+    prefix="",  # changed from "/api/users"
     tags=["users"]
 )
 
-@router.put("/me", status_code=200)
+@router.put("/users", status_code=200)  # changed from "/me"
 def update_my_user(
     payload: UserUpdate,
     current_user: User = Depends(get_current_user),
