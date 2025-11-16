@@ -1,0 +1,230 @@
+.btn {
+  display: inline-block;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  user-select: none;
+  border: 1px solid transparent;
+  transition: all 0.15s ease-in-out;
+  cursor: pointer;
+  border-radius: 0.375rem;
+  text-decoration: none;
+}
+
+.btn:hover {
+  opacity: 0.85;
+}
+
+.btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* Button sizes */
+.btn-sm {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.btn-md {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.btn-lg {
+  padding: 0.75rem 1.5rem;
+  font-size: 1.125rem;
+  line-height: 1.5;
+}
+
+/* Block button */
+.btn-block {
+  display: block;
+  width: 100%;
+}
+
+/* Solid variants - Nowy theme */
+.btn-solid-primary {
+  color: #fff;
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.btn-solid-primary:hover {
+  background-color: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+}
+
+.btn-solid-success {
+  color: #fff;
+  background-color: var(--color-success);
+  border-color: var(--color-success);
+}
+
+.btn-solid-warning {
+  color: #fff;
+  background-color: var(--color-warning);
+  border-color: var(--color-warning);
+}
+
+.btn-solid-danger {
+  color: #fff;
+  background-color: var(--color-danger);
+  border-color: var(--color-danger);
+}
+
+.btn-solid-info {
+  color: #fff;
+  background-color: var(--color-info);
+  border-color: var(--color-info);
+}
+
+.btn-solid-dark {
+  color: #fff;
+  background-color: var(--color-dark);
+  border-color: var(--color-dark);
+}
+
+.btn-solid-secondary {
+  color: #fff;
+  background-color: var(--color-secondary);
+  border-color: var(--color-secondary);
+}
+
+.btn-solid-light {
+  color: var(--text-primary);
+  background-color: var(--color-light);
+  border-color: var(--color-light);
+}
+
+/* Outline variants - Nowy theme */
+.btn-outline-primary {
+  color: var(--color-primary);
+  background-color: transparent;
+  border-color: var(--color-primary);
+}
+
+.btn-outline-primary:hover {
+  color: #fff;
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.btn-outline-success {
+  color: var(--color-success);
+  background-color: transparent;
+  border-color: var(--color-success);
+}
+
+.btn-outline-success:hover {
+  color: #fff;
+  background-color: var(--color-success);
+}
+
+.btn-outline-warning {
+  color: var(--color-warning);
+  background-color: transparent;
+  border-color: var(--color-warning);
+}
+
+.btn-outline-warning:hover {
+  color: #fff;
+  background-color: var(--color-warning);
+}
+
+.btn-outline-danger {
+  color: var(--color-danger);
+  background-color: transparent;
+  border-color: var(--color-danger);
+}
+
+.btn-outline-danger:hover {
+  color: #fff;
+  background-color: var(--color-danger);
+}
+
+.btn-outline-info {
+  color: var(--color-info);
+  background-color: transparent;
+  border-color: var(--color-info);
+}
+
+.btn-outline-info:hover {
+  color: #fff;
+  background-color: var(--color-info);
+}
+
+.btn-outline-dark {
+  color: var(--color-dark);
+  background-color: transparent;
+  border-color: var(--color-dark);
+}
+
+.btn-outline-dark:hover {
+  color: #fff;
+  background-color: var(--color-dark);
+}
+
+/* Ghost variants - Nowy theme */
+.btn-ghost-primary {
+  color: var(--color-primary);
+  background-color: transparent;
+  border-color: transparent;
+}
+
+.btn-ghost-primary:hover {
+  background-color: rgba(17, 153, 142, 0.1);
+}
+
+.btn-ghost-success {
+  color: var(--color-success);
+  background-color: transparent;
+  border-color: transparent;
+}
+
+.btn-ghost-success:hover {
+  background-color: rgba(56, 239, 125, 0.1);
+}
+
+.btn-ghost-warning {
+  color: var(--color-warning);
+  background-color: transparent;
+  border-color: transparent;
+}
+
+.btn-ghost-warning:hover {
+  background-color: rgba(253, 160, 133, 0.1);
+}
+
+.btn-ghost-danger {
+  color: var(--color-danger);
+  background-color: transparent;
+  border-color: transparent;
+}
+
+.btn-ghost-danger:hover {
+  background-color: rgba(229, 83, 83, 0.1);
+}
+
+.btn-ghost-info {
+  color: var(--color-info);
+  background-color: transparent;
+  border-color: transparent;
+}
+
+.btn-ghost-info:hover {
+  background-color: rgba(79, 172, 254, 0.1);
+}
+
+.btn-ghost-dark {
+  color: var(--color-dark);
+  background-color: transparent;
+  border-color: transparent;
+}
+
+.btn-ghost-dark:hover {
+  background-color: rgba(44, 62, 80, 0.1);
+}
