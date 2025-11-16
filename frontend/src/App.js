@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
+import EmployerPage, { loader as employerLoader, action as employerAction } from './pages/Employer';
 
 import HomePage from './pages/Home';
 import AuthPage from './pages/Auth';
@@ -19,7 +20,7 @@ const router = createBrowserRouter([
       { index: true, element: <DashboardPage /> },
       { path: 'employees', element: <EmployeesPage /> },
       { path: 'schedule', element: <SchedulePage /> },
-
+      { path: 'employer', element: <EmployerPage />, loader: employerLoader, action: employerAction}
     ],
   },
 ]);
