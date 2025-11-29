@@ -72,7 +72,9 @@ function AuthPage() {
         console.log('Zarejestrowano pomyślnie, token:', data.access_token);
         
         localStorage.setItem('token', data.access_token);
-        window.location.href = '/dashboard';
+        
+        // Sprawdź status użytkownika i przekieruj do odpowiedniej strony
+        await checkUserStatusAndRedirect(data.access_token);
         
       } else {
         // Logowanie
@@ -96,12 +98,43 @@ function AuthPage() {
         console.log('Zalogowano pomyślnie, token:', data.access_token);
         
         localStorage.setItem('token', data.access_token);
-        window.location.href = '/dashboard';
+        
+        // Sprawdź status użytkownika i przekieruj do odpowiedniej strony
+        await checkUserStatusAndRedirect(data.access_token);
       }
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Funkcja sprawdzająca status użytkownika i przekierowująca
+  const checkUserStatusAndRedirect = async (token) => {
+    try {
+      // Sprawdź czy użytkownik ma employer poprzez GET /employer
+      const employerResponse = await fetch('http://localhost:8000/employer', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      // Jeśli 404, użytkownik nie ma employer - przekieruj do complete-registration
+      if (employerResponse.status === 404) {
+        window.location.href = '/complete-registration';
+      } 
+      // Jeśli 200, użytkownik ma employer - przekieruj do dashboard
+      else if (employerResponse.ok) {
+        window.location.href = '/dashboard';
+      } 
+      // Inne błędy - domyślnie przekieruj do dashboard (może być manager bez employer)
+      else {
+        window.location.href = '/dashboard';
+      }
+    } catch (err) {
+      console.error('Błąd sprawdzania statusu:', err);
+      // W przypadku błędu, przekieruj do dashboard
+      window.location.href = '/dashboard';
     }
   };
 

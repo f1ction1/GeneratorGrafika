@@ -13,7 +13,9 @@ import {
   FaTimes,
   FaSignOutAlt,
   FaMoon,
-  FaSun
+  FaSun,
+  FaBriefcase,
+  FaUserCircle
 } from 'react-icons/fa';
 import { useTheme } from '../context/ThemeContext';
 import './Sidebar.css';
@@ -59,7 +61,7 @@ function Sidebar() {
               alt="Schedulr Logo" 
               className="brand-logo"
             />
-            {isOpen && <span className="brand-text">Schedulr</span>}
+            {isOpen && <span className="brand-text">Schedule</span>}
           </div>
         </div>
 
@@ -68,6 +70,12 @@ function Sidebar() {
           <NavLink to="/dashboard" className="nav-item" end>
             <FaTachometerAlt className="nav-icon" />
             {isOpen && <span>Dashboard</span>}
+          </NavLink>
+
+          {/* Profile */}
+          <NavLink to="/dashboard/profile" className="nav-item">
+            <FaUserCircle className="nav-icon" />
+            {isOpen && <span>My Profile</span>}
           </NavLink>
 
           {/* Management Section */}
@@ -86,6 +94,11 @@ function Sidebar() {
             
             {openSections.management && (
               <div className="nav-section-content">
+                <NavLink to="/dashboard/employer" className="nav-item nav-subitem">
+                  <FaBriefcase className="nav-icon" />
+                  {isOpen && <span>Employer</span>}
+                </NavLink>
+
                 <NavLink to="/dashboard/employees" className="nav-item nav-subitem">
                   <FaUsers className="nav-icon" />
                   {isOpen && <span>Employees</span>}
