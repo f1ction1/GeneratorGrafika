@@ -11,6 +11,20 @@ router = APIRouter(
     tags=["users"]
 )
 
+@router.get("/users/me", status_code=200)
+def get_current_user_info(
+    current_user: User = Depends(get_current_user),
+    service: UserService = Depends(get_user_service)
+):
+    user = service.get_user(current_user.id)
+    return {
+        "id": user.id,
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+        "email": user.email,
+        "role": user.role
+    }
+
 @router.put("/users", status_code=200)  # changed from "/me"
 def update_my_user(
     payload: UserUpdate,

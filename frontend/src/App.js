@@ -8,6 +8,7 @@ import CompleteRegistrationPage from './pages/CompleteRegistration';
 import DashboardPage from './pages/Dashboard';
 import EmployeesPage from './pages/Employees';
 import SchedulePage from './pages/Schedule';
+import ProfilePage from './pages/Profile';
 
 import AppLayout from './components/Layout';
 
@@ -22,7 +23,8 @@ const router = createBrowserRouter([
       { index: true, element: <DashboardPage /> },
       { path: 'employees', element: <EmployeesPage /> },
       { path: 'schedule', element: <SchedulePage /> },
-      { path: 'employer', element: <EmployerPage />, loader: employerLoader, action: employerAction}
+      { path: 'employer', element: <EmployerPage />, loader: employerLoader, action: employerAction},
+      { path: 'profile', element: <ProfilePage /> }
     ],
   },
 ]);
