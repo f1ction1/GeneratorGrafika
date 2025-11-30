@@ -44,6 +44,6 @@ You have to add user-service/.env file for email to work:
 ZOHO_SMTP_HOST=smtp.zoho.eu
 ZOHO_SMTP_PORT=587
 ZOHO_SMTP_USER=no-reply@neatly.cc
-ZOHO_SMTP_PASSWORD=dkdUkd8!
+ZOHO_SMTP_PASSWORD=tRcD6fRPhVDv
 ZOHO_FROM_EMAIL=no-reply@neatly.cc
 ZOHO_FROM_NAME=Schedule Generator
