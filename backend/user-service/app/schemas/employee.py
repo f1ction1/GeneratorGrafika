@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, validator
 from typing import Optional
 
 class EmployeeBase(BaseModel):
@@ -15,6 +15,22 @@ class EmployeeCreate(BaseModel):
     last_name: str
     position: str
     employment_fraction: float
+    
+    @validator("first_name", "last_name")
+    def validate_name(cls, v: str) -> str:
+        if not v.isalpha():
+            raise ValueError("Name must contain only letters")
+
+        if v != v.capitalize():
+            raise ValueError("Name must start with a capital letter and the rest must be lowercase")
+
+        return v
+    
+    @validator("employment_fraction")
+    def validate_fraction(cls, v):
+        if not (0 <= v <= 1):
+            raise ValueError("Employment fraction must be between 0 and 1")
+        return v
 
 class EmployeeUpdate(BaseModel):
     id: int 
