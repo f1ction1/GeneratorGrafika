@@ -1,0 +1,427 @@
+/* Schedule Generation Page Styles */
+.schedulePage {
+  padding: 1.5rem;
+  background-color: var(--bg-body);
+  min-height: 100vh;
+}
+
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.pageTitle {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.pageSubtitle {
+  margin: 0.25rem 0 0 0;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+/* Form Styles */
+.generationForm {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.formGroupCheckBox{
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.formGroupCheckBox input{
+  display: block;
+  margin-top: 0.3rem;
+}
+
+.formGroup label {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+}
+
+.formInput {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--input-border);
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+  transition: all 0.15s ease-in-out;
+  font-family: inherit;
+}
+
+.formInput:focus {
+  outline: none;
+  border-color: var(--input-focus-border);
+  box-shadow: 0 0 0 3px rgba(17, 153, 142, 0.1);
+}
+
+/* Shifts Section */
+.shiftsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sectionHeader h3 {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.shiftItem {
+  background-color: var(--bg-hover);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.shiftHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.shiftFields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+/* Alert Messages */
+.alertSuccess {
+  padding: 1rem 1.25rem;
+  border-radius: 0.375rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  background-color: rgba(56, 239, 125, 0.1);
+  color: var(--color-success);
+  border: 1px solid rgba(56, 239, 125, 0.3);
+}
+
+.alertSuccess svg {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.alertDanger {
+  padding: 1rem 1.25rem;
+  border-radius: 0.375rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  background-color: rgba(229, 83, 83, 0.1);
+  color: var(--color-danger);
+  border: 1px solid rgba(229, 83, 83, 0.3);
+}
+
+.alertDanger svg {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+/* View Controls */
+.viewControls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.weekNavigation {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+  justify-content: center;
+}
+
+.weekLabel {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  min-width: 120px;
+  text-align: center;
+}
+
+.noShifts {
+  grid-column: 1 / -1;
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+/* Schedule Grid */
+.scheduleGrid {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.scheduleTable {
+  display: flex;
+  flex-direction: column;
+  min-width: 800px;
+}
+
+.scheduleHeader {
+  display: grid;
+  grid-template-columns: 120px repeat(auto-fit, minmax(100px, 1fr));
+  gap: 1px;
+  background-color: var(--border-color);
+  border-radius: 0.375rem 0.375rem 0 0;
+  overflow: hidden;
+}
+
+.scheduleRow {
+  display: grid;
+  grid-template-columns: 120px repeat(auto-fit, minmax(100px, 1fr));
+  gap: 1px;
+  background-color: var(--border-color);
+}
+
+.scheduleRow:last-child {
+  border-radius: 0 0 0.375rem 0.375rem;
+  overflow: hidden;
+}
+
+.headerCell {
+  background-color: var(--bg-elevated);
+  padding: 1rem 0.75rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0.25rem;
+  min-height: 80px;
+}
+
+.headerCell.weekend {
+  background-color: rgba(253, 160, 133, 0.1);
+}
+
+.headerCell.closed {
+  background-color: rgba(229, 83, 83, 0.1);
+  opacity: 0.7;
+}
+
+.dayNumber {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.dayName {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.closedLabel {
+  font-size: 0.7rem;
+  color: var(--color-danger);
+  font-weight: 600;
+  margin-top: 0.25rem;
+}
+
+.shiftCell {
+  background-color: var(--bg-elevated);
+  padding: 1rem 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.dayCell {
+  background-color: var(--bg-surface);
+  padding: 0.75rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-height: 100px;
+  transition: all 0.15s ease;
+}
+
+.dayCell:hover {
+  background-color: var(--bg-hover);
+}
+
+.closedCell {
+  background-color: rgba(229, 83, 83, 0.05);
+  opacity: 0.5;
+}
+
+.employeeCount {
+  font-size: 0.7rem;
+  align-self: center;
+}
+
+.employeeList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.employeeChip {
+  background-color: var(--bg-hover);
+  padding: 0.375rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  color: var(--text-primary);
+  border-left: 3px solid var(--color-primary);
+  transition: all 0.15s ease;
+  text-align: left;
+}
+
+.employeeChip:hover {
+  background-color: var(--bg-elevated);
+  transform: translateX(2px);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .schedulePage {
+    padding: 1rem;
+  }
+
+  .pageHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .pageHeader button {
+    width: 100%;
+  }
+
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .shiftFields {
+    grid-template-columns: 1fr;
+  }
+
+  .viewControls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .viewModeButtons {
+    width: 100%;
+  }
+
+  .viewModeButtons button {
+    flex: 1;
+  }
+
+  .weekNavigation {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .scheduleTable {
+    min-width: 600px;
+  }
+
+  .scheduleHeader,
+  .scheduleRow {
+    grid-template-columns: 80px repeat(auto-fit, minmax(80px, 1fr));
+  }
+
+  .headerCell {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.75rem;
+    min-height: 60px;
+  }
+
+  .dayNumber {
+    font-size: 1rem;
+  }
+
+  .shiftCell {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .dayCell {
+    padding: 0.5rem 0.375rem;
+    min-height: 80px;
+  }
+
+  .employeeChip {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.375rem;
+  }
+}
+
+/* Dark mode adjustments */
+[data-theme="dark"] .shiftItem {
+  background-color: var(--bg-elevated);
+  border-color: var(--border-color-dark);
+}
+
+[data-theme="dark"] .headerCell.weekend {
+  background-color: rgba(253, 160, 133, 0.05);
+}
+
+[data-theme="dark"] .headerCell.closed {
+  background-color: rgba(229, 83, 83, 0.05);
+}
