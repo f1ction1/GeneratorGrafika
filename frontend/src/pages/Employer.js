@@ -90,7 +90,14 @@ export default function EmployerPage() {
     const isSubmitting = navigation.state === 'submitting';
 
     const handleCancel = () => {
+<<<<<<< HEAD
         setIsEditing(false);
+=======
+    setIsEditing(false);
+    if (actionData?.success) {
+        window.location.reload();
+    }
+>>>>>>> origin/SCRUM-19
     };
 
     return (
@@ -141,7 +148,11 @@ export default function EmployerPage() {
         <input type="hidden" name="intent" value="update" />
         
         <Card header="Company Information" color="primary">
+<<<<<<< HEAD
             <div className={styles.formContent} key={isEditing ? 'edit' : 'view'}>
+=======
+            <div className={styles.formContent}>
+>>>>>>> origin/SCRUM-19
             <div className={styles.formGroup}>
                 <label htmlFor="name">
                 <FaBuilding className={styles.labelIcon} />
@@ -151,6 +162,10 @@ export default function EmployerPage() {
                 type="text"
                 id="name"
                 name="name"
+<<<<<<< HEAD
+=======
+                key={employer?.name || 'name-input'}
+>>>>>>> origin/SCRUM-19
                 defaultValue={employer?.name || ''}
                 disabled={!isEditing}
                 required
