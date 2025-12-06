@@ -90,10 +90,7 @@ export default function EmployerPage() {
     const isSubmitting = navigation.state === 'submitting';
 
     const handleCancel = () => {
-    setIsEditing(false);
-    if (actionData?.success) {
-        window.location.reload();
-    }
+        setIsEditing(false);
     };
 
     return (
@@ -144,7 +141,7 @@ export default function EmployerPage() {
         <input type="hidden" name="intent" value="update" />
         
         <Card header="Company Information" color="primary">
-            <div className={styles.formContent}>
+            <div className={styles.formContent} key={isEditing ? 'edit' : 'view'}>
             <div className={styles.formGroup}>
                 <label htmlFor="name">
                 <FaBuilding className={styles.labelIcon} />
@@ -154,7 +151,6 @@ export default function EmployerPage() {
                 type="text"
                 id="name"
                 name="name"
-                key={employer?.name || 'name-input'}
                 defaultValue={employer?.name || ''}
                 disabled={!isEditing}
                 required
