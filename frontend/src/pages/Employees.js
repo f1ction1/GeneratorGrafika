@@ -1,201 +1,347 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Employees.css';
 import { 
   Card, 
   Table, 
-  Badge, 
   Button,
-  StatCard
 } from '../components/dashboard';
 import { 
   FaUsers, 
-  FaUserPlus, 
-  FaUserCheck, 
-  FaUserClock,
   FaEdit,
   FaTrash,
   FaPlus,
-  FaSearch,
-  FaFilter
+  FaTimes,
+  FaSave,
+  FaCheckCircle,
+  FaExclamationTriangle,
+  FaUser,
+  FaBriefcase,
+  FaClock
 } from 'react-icons/fa';
 
 function EmployeesPage() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterStatus, setFilterStatus] = useState('all');
+  const [employees, setEmployees] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [isAdding, setIsAdding] = useState(false);
+  const [editingId, setEditingId] = useState(null);
 
-  // Employee statistics
-  const stats = [
-    {
-      title: 'Total Employees',
-      value: '156',
-      color: 'primary',
-      icon: <FaUsers />,
-      change: '+12',
-    },
-    {
-      title: 'Active Today',
-      value: '142',
-      color: 'success',
-      icon: <FaUserCheck />,
-      change: '+5',
-    },
-    {
-      title: 'On Leave',
-      value: '8',
-      color: 'warning',
-      icon: <FaUserClock />,
-      change: '-2',
-    },
-    {
-      title: 'New This Month',
-      value: '6',
-      color: 'info',
-      icon: <FaUserPlus />,
-      change: '+6',
-    },
-  ];
+  // Form state for adding new employee
+  const [formData, setFormData] = useState({
+    first_name: '',
+    last_name: '',
+    position: '',
+    employment_fraction: 1.0
+  });
+
+  // Form state for editing employee
+  const [editFormData, setEditFormData] = useState({
+    id: null,
+    first_name: '',
+    last_name: '',
+    position: '',
+    employment_fraction: 1.0
+  });
+
+  // Fetch employees from backend
+  useEffect(() => {
+    fetchEmployees();
+  }, []);
+
+  const fetchEmployees = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setError('Not authenticated');
+        return;
+      }
+
+      const response = await fetch('http://localhost:8000/employee', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        if (response.status === 404) {
+          setEmployees([]);
+          setLoading(false);
+          return;
+        }
+        throw new Error('Failed to fetch employees');
+      }
+
+      const data = await response.json();
+      setEmployees(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle input change for add form
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: name === 'employment_fraction' ? parseFloat(value) : value
+    }));
+  };
+
+  // Handle input change for edit form
+  const handleEditInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditFormData(prev => ({
+      ...prev,
+      [name]: name === 'employment_fraction' ? parseFloat(value) : value
+    }));
+  };
+
+  // Handle add employee
+  const handleAddEmployee = async (e) => {
+    e.preventDefault();
+    setError('');
+    setSuccess('');
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('http://localhost:8000/employee', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Failed to add employee');
+      }
+
+      setSuccess('Employee added successfully!');
+      setFormData({
+        first_name: '',
+        last_name: '',
+        position: '',
+        employment_fraction: 1.0
+      });
+      setIsAdding(false);
+      fetchEmployees();
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  // Handle edit employee
+  const handleEdit = (employee) => {
+    setEditingId(employee.id);
+    setEditFormData({
+      id: employee.id,
+      first_name: employee.first_name,
+      last_name: employee.last_name,
+      position: employee.position,
+      employment_fraction: employee.employment_fraction
+    });
+    setError('');
+    setSuccess('');
+  };
+
+  // Handle save edited employee
+  const handleSaveEdit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setSuccess('');
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('http://localhost:8000/employee', {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(editFormData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Failed to update employee');
+      }
+
+      setSuccess('Employee updated successfully!');
+      setEditingId(null);
+      fetchEmployees();
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  // Handle cancel edit
+  const handleCancelEdit = () => {
+    setEditingId(null);
+    setEditFormData({
+      id: null,
+      first_name: '',
+      last_name: '',
+      position: '',
+      employment_fraction: 1.0
+    });
+    setError('');
+    setSuccess('');
+  };
+
+  // Handle delete employee
+  const handleDelete = async (employee) => {
+    if (!window.confirm(`Are you sure you want to delete ${employee.first_name} ${employee.last_name}?`)) {
+      return;
+    }
+
+    setError('');
+    setSuccess('');
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch('http://localhost:8000/employee', {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: employee.id }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Failed to delete employee');
+      }
+
+      setSuccess('Employee deleted successfully!');
+      fetchEmployees();
+    } catch (err) {
+      setError(err.message);
+    }
+  };
 
   // Table columns configuration
   const tableColumns = [
     { key: 'id', label: 'ID' },
-    { key: 'name', label: 'Name' },
-    { key: 'email', label: 'Email' },
-    { key: 'position', label: 'Position' },
     { 
-      key: 'status', 
-      label: 'Status',
-      render: (value) => {
-        const colorMap = {
-          'Active': 'success',
-          'On Leave': 'warning',
-          'Inactive': 'danger',
-        };
-        return <Badge color={colorMap[value] || 'dark'}>{value}</Badge>;
-      }
+      key: 'name', 
+      label: 'Name',
+      render: (_, row) => (
+        editingId === row.id ? (
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <input
+              type="text"
+              name="first_name"
+              value={editFormData.first_name}
+              onChange={handleEditInputChange}
+              placeholder="First Name"
+              style={{ flex: 1, padding: '6px', borderRadius: '4px', border: '1px solid #ddd' }}
+            />
+            <input
+              type="text"
+              name="last_name"
+              value={editFormData.last_name}
+              onChange={handleEditInputChange}
+              placeholder="Last Name"
+              style={{ flex: 1, padding: '6px', borderRadius: '4px', border: '1px solid #ddd' }}
+            />
+          </div>
+        ) : (
+          `${row.first_name} ${row.last_name}`
+        )
+      )
     },
-    { key: 'hireDate', label: 'Hire Date' },
+    { 
+      key: 'position', 
+      label: 'Position',
+      render: (value, row) => (
+        editingId === row.id ? (
+          <input
+            type="text"
+            name="position"
+            value={editFormData.position}
+            onChange={handleEditInputChange}
+            placeholder="Position"
+            style={{ width: '100%', padding: '6px', borderRadius: '4px', border: '1px solid #ddd' }}
+          />
+        ) : (
+          value || 'N/A'
+        )
+      )
+    },
+    { 
+      key: 'employment_fraction', 
+      label: 'Employment',
+      render: (value, row) => (
+        editingId === row.id ? (
+          <input
+            type="number"
+            name="employment_fraction"
+            value={editFormData.employment_fraction}
+            onChange={handleEditInputChange}
+            min="0.1"
+            max="1.0"
+            step="0.05"
+            style={{ width: '100%', padding: '6px', borderRadius: '4px', border: '1px solid #ddd' }}
+          />
+        ) : (
+          `${(value * 100).toFixed(0)}%`
+        )
+      )
+    },
     {
       key: 'actions',
       label: 'Actions',
       render: (_, row) => (
         <div className="action-buttons">
-          <Button 
-            size="sm" 
-            variant="ghost" 
-            color="info" 
-            onClick={() => handleEdit(row)}
-          >
-            <FaEdit />
-          </Button>
-          <Button 
-            size="sm" 
-            variant="ghost" 
-            color="danger" 
-            onClick={() => handleDelete(row)}
-          >
-            <FaTrash />
-          </Button>
+          {editingId === row.id ? (
+            <>
+              <Button 
+                size="sm" 
+                color="success" 
+                onClick={handleSaveEdit}
+              >
+                <FaSave /> Save
+              </Button>
+              <Button 
+                size="sm" 
+                variant="outline" 
+                color="danger" 
+                onClick={handleCancelEdit}
+              >
+                <FaTimes /> Cancel
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button 
+                size="sm" 
+                variant="ghost" 
+                color="info" 
+                onClick={() => handleEdit(row)}
+              >
+                <FaEdit />
+              </Button>
+              <Button 
+                size="sm" 
+                variant="ghost" 
+                color="danger" 
+                onClick={() => handleDelete(row)}
+              >
+                <FaTrash />
+              </Button>
+            </>
+          )}
         </div>
       )
     }
   ];
-
-  // Sample employee data
-  const employeeData = [
-    {
-      id: 1,
-      name: 'Jan Kowalski',
-      email: 'jan.kowalski@company.com',
-      position: 'Senior Developer',
-      status: 'Active',
-      hireDate: '2023-01-15'
-    },
-    {
-      id: 2,
-      name: 'Anna Nowak',
-      email: 'anna.nowak@company.com',
-      position: 'Project Manager',
-      status: 'Active',
-      hireDate: '2022-06-10'
-    },
-    {
-      id: 3,
-      name: 'Piotr Wiśniewski',
-      email: 'piotr.wisniewski@company.com',
-      position: 'Designer',
-      status: 'On Leave',
-      hireDate: '2023-03-20'
-    },
-    {
-      id: 4,
-      name: 'Maria Wójcik',
-      email: 'maria.wojcik@company.com',
-      position: 'HR Specialist',
-      status: 'Active',
-      hireDate: '2021-09-05'
-    },
-    {
-      id: 5,
-      name: 'Tomasz Kamiński',
-      email: 'tomasz.kaminski@company.com',
-      position: 'Marketing Manager',
-      status: 'Active',
-      hireDate: '2022-11-12'
-    },
-    {
-      id: 6,
-      name: 'Katarzyna Lewandowska',
-      email: 'katarzyna.lewandowska@company.com',
-      position: 'Junior Developer',
-      status: 'Active',
-      hireDate: '2024-08-01'
-    },
-    {
-      id: 7,
-      name: 'Michał Zieliński',
-      email: 'michal.zielinski@company.com',
-      position: 'Sales Representative',
-      status: 'Inactive',
-      hireDate: '2020-04-18'
-    },
-    {
-      id: 8,
-      name: 'Agnieszka Szymańska',
-      email: 'agnieszka.szymanska@company.com',
-      position: 'Accountant',
-      status: 'Active',
-      hireDate: '2023-02-28'
-    },
-  ];
-
-  // Event handlers
-  const handleEdit = (employee) => {
-    console.log('Edit employee:', employee);
-    alert(`Edit: ${employee.name}`);
-  };
-
-  const handleDelete = (employee) => {
-    console.log('Delete employee:', employee);
-    if (window.confirm(`Delete ${employee.name}?`)) {
-      alert(`Deleted: ${employee.name}`);
-    }
-  };
-
-  const handleAddEmployee = () => {
-    alert('Open Add Employee Form');
-  };
-
-  // Filter employees based on search and status
-  const filteredEmployees = employeeData.filter(emp => {
-    const matchesSearch = searchTerm === '' || 
-      emp.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      emp.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      emp.position.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesStatus = filterStatus === 'all' || emp.status === filterStatus;
-    
-    return matchesSearch && matchesStatus;
-  });
 
   return (
     <div className="employees-page">
@@ -205,85 +351,137 @@ function EmployeesPage() {
           <h1 className="page-title">Employee Management</h1>
           <p className="page-subtitle">Manage your workforce and team members</p>
         </div>
-        <Button color="primary" onClick={handleAddEmployee}>
-          <FaPlus /> Add Employee
-        </Button>
+        {!isAdding ? (
+          <Button color="primary" onClick={() => setIsAdding(true)}>
+            <FaPlus /> Add Employee
+          </Button>
+        ) : (
+          <Button color="danger" variant="outline" onClick={() => setIsAdding(false)}>
+            <FaTimes /> Cancel
+          </Button>
+        )}
       </div>
 
-      {/* Statistics */}
-      <div className="stats-grid">
-        {stats.map((stat, idx) => (
-          <StatCard
-            key={idx}
-            title={stat.title}
-            value={stat.value}
-            color={stat.color}
-            icon={stat.icon}
-            change={stat.change}
-          />
-        ))}
-      </div>
-
-      {/* Filters and Search */}
-      <Card>
-        <div className="filter-section">
-          <div className="search-box">
-            <FaSearch className="search-icon" />
-            <input
-              type="text"
-              placeholder="Search employees by name, email, or position..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="search-input"
-            />
-          </div>
-          <div className="filter-controls">
-            <FaFilter className="filter-icon" />
-            <select 
-              value={filterStatus} 
-              onChange={(e) => setFilterStatus(e.target.value)}
-              className="filter-select"
-            >
-              <option value="all">All Status</option>
-              <option value="Active">Active</option>
-              <option value="On Leave">On Leave</option>
-              <option value="Inactive">Inactive</option>
-            </select>
-          </div>
+      {/* Success/Error Messages */}
+      {success && (
+        <div className="alert alert-success">
+          <FaCheckCircle /> {success}
         </div>
-      </Card>
-
-      {/* Employee Table */}
-      <Card header={`Employees (${filteredEmployees.length})`} color="primary">
-        <Table
-          columns={tableColumns}
-          data={filteredEmployees}
-          striped
-          hover
-        />
-      </Card>
-
-      {/* Department Summary */}
-      <div className="dashboard-row">
-        <div className="dashboard-col-8">
-          
+      )}
+      {error && (
+        <div className="alert alert-danger">
+          <FaExclamationTriangle /> {error}
         </div>
-        <div className="dashboard-col-4">
-          <Card header="Quick Actions" color="success">
-            <div className="quick-actions">
-              <Button block variant="outline" color="primary" className="action-btn">
-                <FaUserPlus /> Bulk Import
-              </Button>
-              <Button block variant="outline" color="info" className="action-btn">
-                <FaFilter /> Export to CSV
-              </Button>
-              <Button block variant="outline" color="warning" className="action-btn">
-                <FaUsers /> Generate Report
+      )}
+
+      {/* Add Employee Form */}
+      {isAdding && (
+        <Card header="Add New Employee" color="primary">
+          <form onSubmit={handleAddEmployee} className="employee-form">
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="first_name">
+                  <FaUser className="label-icon" />
+                  First Name *
+                </label>
+                <input
+                  type="text"
+                  id="first_name"
+                  name="first_name"
+                  value={formData.first_name}
+                  onChange={handleInputChange}
+                  required
+                  placeholder="Enter first name"
+                  className="form-input"
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="last_name">
+                  <FaUser className="label-icon" />
+                  Last Name *
+                </label>
+                <input
+                  type="text"
+                  id="last_name"
+                  name="last_name"
+                  value={formData.last_name}
+                  onChange={handleInputChange}
+                  required
+                  placeholder="Enter last name"
+                  className="form-input"
+                />
+              </div>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="position">
+                  <FaBriefcase className="label-icon" />
+                  Position *
+                </label>
+                <input
+                  type="text"
+                  id="position"
+                  name="position"
+                  value={formData.position}
+                  onChange={handleInputChange}
+                  required
+                  placeholder="e.g., Developer, Manager"
+                  className="form-input"
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="employment_fraction">
+                  <FaClock className="label-icon" />
+                  Employment Fraction *
+                </label>
+                <input
+                  type="number"
+                  id="employment_fraction"
+                  name="employment_fraction"
+                  value={formData.employment_fraction}
+                  onChange={handleInputChange}
+                  required
+                  min="0.1"
+                  max="1.0"
+                  step="0.05"
+                  placeholder="1.0 = full-time"
+                  className="form-input"
+                />
+              </div>
+            </div>
+
+            <div className="form-actions">
+              <Button type="submit" color="success">
+                <FaSave /> Add Employee
               </Button>
             </div>
-          </Card>
-        </div>
-      </div>
+          </form>
+        </Card>
+      )}
+
+      {/* Employee Table */}
+      <Card header={`Employees (${employees.length})`} color="primary">
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '40px' }}>
+            <p>Loading employees...</p>
+          </div>
+        ) : employees.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '40px' }}>
+            <FaUsers style={{ fontSize: '48px', color: '#ccc', marginBottom: '16px' }} />
+            <p>No employees found. Add your first employee to get started!</p>
+          </div>
+        ) : (
+          <Table
+            columns={tableColumns}
+            data={employees}
+            striped
+            hover
+          />
+        )}
+      </Card>
     </div>
   );
 }
