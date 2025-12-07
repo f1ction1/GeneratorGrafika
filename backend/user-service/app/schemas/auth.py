@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, validator, root_validator
+from pydantic import BaseModel, EmailStr, validator, root_validator, ConfigDict
 from password_validator import PasswordValidator
 import re
 
@@ -16,6 +16,19 @@ class RegisterRequest(BaseModel):
     password: str
     password_confirm: str
     role:str
+
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "first_name": "John",
+                "last_name": "Doe",
+                "email": "john.doe@example.com",
+                "password": "Password1!",
+                "password_confirm": "Password1!",
+                "role": "owner",
+            }
+        }
+    )
 
     @validator("first_name", "last_name")
     def validate_name(cls, v: str) -> str:

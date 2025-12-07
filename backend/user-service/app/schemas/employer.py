@@ -1,4 +1,4 @@
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, validator, ConfigDict
 from typing import Optional
 import re
 
@@ -53,6 +53,14 @@ class EmployerBase(BaseModel):
 
 class EmployerCreate(EmployerBase):
     pass
+    model_config = ConfigDict(
+        json_schema_extra={
+            "example": {
+                "name": "Apple",
+                "address": "California",
+            }
+        }
+    )
 
 class EmployerUpdate(BaseModel):
     name: Optional[str] = None
