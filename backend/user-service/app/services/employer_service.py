@@ -10,7 +10,11 @@ class EmployerService:
     def create_employer(self, user: models.User, data: EmployerCreate):       
         if user.employer_id is not None:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User already belongs to an employer")
-
+        if user.role != "owner":
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Only owners can create employers",
+            )
         employer = models.Employer(
             name=data.name,
             address=data.address,
@@ -30,16 +34,23 @@ class EmployerService:
         return EmployerBase(name=employer.name, address=employer.address)
 
     def update_employer(self, user: models.User, data: EmployerUpdate):
+        if user.employer_id is not None:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User already belongs to an employer")
+        if user.role != "owner":
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Only owners can create employers",
+            )
         employer = self.db.query(models.Employer).filter(models.Employer.id == user.employer_id).first()
         if not employer:
             raise HTTPException(status_code=404, detail='Employer not found')
         if employer.owner_id != user.id:
             raise HTTPException(status_code=403, detail='Only owner can update employer')
         updated = False
-        if data.name is not None:
+        if data.name is not None and data.name != employer.name:
             employer.name = data.name
             updated = True
-        if data.address is not None:
+        if data.address is not None and data.address != employer.address:
             employer.address = data.address
             updated = True
         if not updated:

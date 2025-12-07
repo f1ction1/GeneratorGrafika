@@ -8,9 +8,6 @@ class EmployeeService:
         self.db = db
 
     def create_employee(self, user: models.User, data: EmployeeCreate):       
-        # if user.employee_id is not None:
-        #     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User already belongs to an employee")
-
         employee = models.Employee(
             first_name=data.first_name,
             last_name=data.last_name,
@@ -19,25 +16,7 @@ class EmployeeService:
             employer_id=user.employer_id
         )
         self.db.add(employee)
-        #self.db.flush()  # get id employee (without commit)
-        #owner.employee_id -> employee.id
-        #employer.employee_id = employee.id
         self.db.commit()
-
-    # show only first employee from current user
-    # def get_employee(self, user: models.User):
-    #     employee = self.db.query(models.Employee).filter(models.Employee.employer_id == user.employer_id).first()
-    #     if not employee:
-    #         raise HTTPException(status_code=404, detail='Employees is not found for the given user')
-        
-    #     return EmployeeBase(
-    #         id=employee.id,
-    #         first_name=employee.first_name, 
-    #         last_name=employee.last_name, 
-    #         position=employee.position, 
-    #         employment_fraction=employee.employment_fraction, 
-    #         employer_id=user.employer_id
-    #     )
 
     # show all employees from current user
     def get_employee(self, user: models.User):
@@ -64,16 +43,16 @@ class EmployeeService:
         if employee.employer_id != user.employer_id:
             raise HTTPException(status_code=403, detail='Only owner can update employee')
         updated = False
-        if data.first_name is not None and data.first_name!="":
+        if data.first_name is not None and data.first_name != employee.first_name:
             employee.first_name = data.first_name
             updated = True
-        if data.last_name is not None and data.last_name!="":
+        if data.last_name is not None and data.last_name != employee.last_name:
             employee.last_name = data.last_name
             updated = True
-        if data.position is not None and data.position!="":
+        if data.position is not None and data.position != employee.position:
             employee.position = data.position
             updated = True
-        if data.employment_fraction:
+        if data.employment_fraction and data.employment_fraction != employee.employment_fraction:
             employee.employment_fraction = data.employment_fraction
             updated = True
         if not updated:
