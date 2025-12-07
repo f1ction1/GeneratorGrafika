@@ -287,7 +287,7 @@ function EmployeesPage() {
             onChange={handleEditInputChange}
             min="0.1"
             max="1.0"
-            step="0.1"
+            step="0.05"
             style={{ width: '100%', padding: '6px', borderRadius: '4px', border: '1px solid #ddd' }}
           />
         ) : (
@@ -446,7 +446,7 @@ function EmployeesPage() {
                   required
                   min="0.1"
                   max="1.0"
-                  step="0.1"
+                  step="0.05"
                   placeholder="1.0 = full-time"
                   className="form-input"
                 />
