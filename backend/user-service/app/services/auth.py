@@ -37,7 +37,7 @@ def login_user(db: Session, email: str, password: str) -> str:
     if not user:
         raise HTTPException(status_code=400, detail="Invalid email or password")
 
-    if not verify_password(password, user.password):
+    if not verify_password(password, user.password): # type: ignore
         raise HTTPException(status_code=400, detail="Invalid email or password")
 
     exp = int((datetime.utcnow() + timedelta(days=7)).timestamp())
@@ -49,7 +49,7 @@ def generate_password_reset_token(db: Session, email: str) -> str | None:
     user = db.query(User).filter(User.email == email).first()
     if not user:
         return None
-    return create_reset_token(user.id)
+    return create_reset_token(user.id) # type: ignore
 
 def reset_password(db: Session, token: str, new_password: str, new_password_confirm: str) -> None:
     if new_password != new_password_confirm:
@@ -58,5 +58,5 @@ def reset_password(db: Session, token: str, new_password: str, new_password_conf
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    user.password = hash_password(new_password)
+    user.password = hash_password(new_password) # type: ignore
     db.commit()
