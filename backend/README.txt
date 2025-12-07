@@ -47,3 +47,4 @@ ZOHO_SMTP_USER=no-reply@neatly.cc
 ZOHO_SMTP_PASSWORD=tRcD6fRPhVDv
 ZOHO_FROM_EMAIL=no-reply@neatly.cc
 ZOHO_FROM_NAME=Schedule Generator
+PASSWORD_RESET_URL=http://localhost:3000/reset-password

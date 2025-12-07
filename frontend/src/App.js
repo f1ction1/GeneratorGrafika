@@ -6,12 +6,14 @@ import AuthPage from './pages/Auth';
 import DashboardPage from './pages/Dashboard';
 import EmployeesPage from './pages/Employees';
 import SchedulePage from './pages/Schedule';
+import ResetPasswordPage from './pages/ResetPassword';
 
 import AppLayout from './components/Layout';
 
 const router = createBrowserRouter([
   { path: '/', element: <HomePage /> },
   { path: '/auth', element: <AuthPage /> },
+  { path: '/reset-password', element: <ResetPasswordPage /> },
   {
     path: '/dashboard',
     element: <AppLayout />,
@@ -19,7 +21,6 @@ const router = createBrowserRouter([
       { index: true, element: <DashboardPage /> },
       { path: 'employees', element: <EmployeesPage /> },
       { path: 'schedule', element: <SchedulePage /> },
-
     ],
   },
 ]);

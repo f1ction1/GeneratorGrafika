@@ -2,11 +2,11 @@ from fastapi import APIRouter, Depends, HTTPException, status, Response, Backgro
 from sqlalchemy.orm import Session
 
 from db import get_db
-from schemas.auth import RegisterRequest, LoginRequest, TokenResponse
-from services.auth import register_user, login_user
+from schemas.auth import RegisterRequest, LoginRequest, TokenResponse, PasswordResetRequest, PasswordResetConfirm
+from services.auth import register_user, login_user, generate_password_reset_token, reset_password
 from core.security import get_current_user
 from models import User, Employer, Employee
-from services.email_service import send_registration_email
+from services.email_service import send_registration_email, send_password_reset_email
 
 router = APIRouter()
 
@@ -35,6 +35,24 @@ async def register(
 def login(req: LoginRequest, db: Session = Depends(get_db)):
     token = login_user(db, req.email, req.password)
     return {"access_token": token}
+
+
+@router.post("/password/reset/request", status_code=status.HTTP_202_ACCEPTED)
+async def request_password_reset(
+    req: PasswordResetRequest,
+    background_tasks: BackgroundTasks,
+    db: Session = Depends(get_db),
+):
+    token = generate_password_reset_token(db, req.email)
+    if token:
+        background_tasks.add_task(send_password_reset_email, req.email, token)
+    return {"message": "If the email exists, password reset instructions were sent."}
+
+
+@router.post("/password/reset/confirm")
+def confirm_password_reset(req: PasswordResetConfirm, db: Session = Depends(get_db)):
+    reset_password(db, req.token, req.new_password, req.new_password_confirm)
+    return {"message": "Password has been reset."}
 
 
 @router.delete("/me", status_code=status.HTTP_204_NO_CONTENT)
