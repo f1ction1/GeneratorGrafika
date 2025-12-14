@@ -9,6 +9,7 @@ import hmac
 import hashlib
 import base64
 import json
+from datetime import datetime, timedelta
 
 SECRET_KEY = os.environ.get("SECRET_KEY", "super-secret-change-me")
 ALGORITHM = "HS256"
@@ -24,7 +25,7 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(bearer_
     try:
         token = credentials.credentials
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        user_id: int = payload.get("id")
+        user_id: int = payload.get("id") # type: ignore
         if user_id is None:
             raise credentials_exception
     except JWTError:
@@ -64,3 +65,49 @@ def create_jwt(payload: dict) -> str:
     signature = hmac.new(SECRET_KEY.encode(), signing_input, hashlib.sha256).digest()
     signature_b = _base64url_encode(signature)
     return f"{header_b}.{payload_b}.{signature_b}"
+
+def create_reset_token(user_id: int, expires_minutes: int = 30) -> str:
+    exp_ts = int((datetime.utcnow() + timedelta(minutes=expires_minutes)).timestamp())
+    payload = {"id": str(user_id), "type": "password_reset", "exp": exp_ts}
+    return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
+
+def _decode_legacy_reset_token(token: str) -> dict | None:
+    try:
+        header_b64, payload_b64, signature_b64 = token.split(".")
+    except ValueError:
+        return None
+    pad = lambda segment: segment + "=" * (-len(segment) % 4)
+    signing_input = f"{header_b64}.{payload_b64}".encode()
+    try:
+        expected = hmac.new(SECRET_KEY.encode(), signing_input, hashlib.sha256).digest()
+        actual = base64.urlsafe_b64decode(pad(signature_b64))
+    except Exception:
+        return None
+    if not hmac.compare_digest(expected, actual):
+        return None
+    try:
+        payload_raw = base64.urlsafe_b64decode(pad(payload_b64)).decode()
+        payload = json.loads(payload_raw)
+    except Exception:
+        return None
+    exp_value = payload.get("exp")
+    if exp_value is not None and int(exp_value) < int(datetime.utcnow().timestamp()):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid or expired token")
+    return payload
+
+def verify_reset_token(token: str) -> int:
+    cleaned_token = token.strip()
+    if not cleaned_token:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid token payload")
+    try:
+        data = jwt.decode(cleaned_token, SECRET_KEY, algorithms=[ALGORITHM])
+    except JWTError:
+        data = _decode_legacy_reset_token(cleaned_token)
+        if not data:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid or expired token")
+    if data.get("type") != "password_reset":
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid token type")
+    user_id = data.get("id")
+    if not user_id:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid token payload")
+    return int(user_id)

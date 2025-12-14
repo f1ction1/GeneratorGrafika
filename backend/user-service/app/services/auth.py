@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from models.User import User
 from schemas.auth import RegisterRequest
-from core.security import hash_password, create_jwt, verify_password
+from core.security import hash_password, create_jwt, verify_password, create_reset_token, verify_reset_token
 
 def register_user(db: Session, req: RegisterRequest) -> str:
     if req.password != req.password_confirm:
@@ -37,10 +37,26 @@ def login_user(db: Session, email: str, password: str) -> str:
     if not user:
         raise HTTPException(status_code=400, detail="Invalid email or password")
 
-    if not verify_password(password, user.password):
+    if not verify_password(password, user.password): # type: ignore
         raise HTTPException(status_code=400, detail="Invalid email or password")
 
     exp = int((datetime.utcnow() + timedelta(days=7)).timestamp())
     payload = {"id": str(user.id), "email": user.email, "role": user.role, "exp": exp}
     token = create_jwt(payload)
     return token
+
+def generate_password_reset_token(db: Session, email: str) -> str | None:
+    user = db.query(User).filter(User.email == email).first()
+    if not user:
+        return None
+    return create_reset_token(user.id) # type: ignore
+
+def reset_password(db: Session, token: str, new_password: str, new_password_confirm: str) -> None:
+    if new_password != new_password_confirm:
+        raise HTTPException(status_code=400, detail="Passwords do not match")
+    user_id = verify_reset_token(token)
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    user.password = hash_password(new_password) # type: ignore
+    db.commit()

@@ -20,3 +20,11 @@ class UserUpdate(BaseModel):
     last_name: str
     email: EmailStr
 
+class PasswordResetRequest(BaseModel):
+    email: EmailStr
+
+class PasswordResetConfirm(BaseModel):
+    token: str
+    new_password: str
+    new_password_confirm: str
+
