@@ -9,6 +9,7 @@ import EmployerPage, {
 import HomePage from './pages/Home';
 import AuthPage from './pages/Auth';
 import CompleteRegistrationPage from './pages/CompleteRegistration';
+import ResetPasswordPage from './pages/ResetPassword';
 import DashboardPage from './pages/Dashboard';
 import EmployeesPage from './pages/Employees';
 import SchedulePage, { action as SchedulePageAction } from './pages/Schedule';
@@ -22,6 +23,7 @@ const router = createBrowserRouter([
   { path: '/auth', element: <AuthPage /> },
   { path: '/reset-password', element: <ResetPasswordPage /> },
   { path: '/complete-registration', element: <CompleteRegistrationPage /> },
+  { path: '/reset-password', element: <ResetPasswordPage /> },
   {
     path: '/dashboard',
     element: <AppLayout />,

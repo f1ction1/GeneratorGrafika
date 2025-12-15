@@ -1,10 +1,11 @@
-import logging
 import os
 import smtplib
 from email.message import EmailMessage
 from pathlib import Path
 
-logger = logging.getLogger(__name__)
+from core.logging_config import get_logger
+
+logger = get_logger(__name__)
 
 _ENV_LOADED = False
 
@@ -38,6 +39,8 @@ def _is_configured() -> bool:
     return all([SMTP_USER, SMTP_PASSWORD, FROM_EMAIL])
 
 def send_registration_email(recipient_email: str, recipient_name: str | None = None) -> None:
+    logger.info(f"Attempting to send registration email to: {recipient_email}")
+    
     if not recipient_email:
         logger.warning("Recipient email missing, skipping registration notification.")
         return
@@ -46,6 +49,8 @@ def send_registration_email(recipient_email: str, recipient_name: str | None = N
         return
 
     friendly_name = recipient_name or recipient_email.split("@")[0]
+    logger.debug(f"Preparing registration email for: {friendly_name} ({recipient_email})")
+    
     message = EmailMessage()
     message["Subject"] = "Witamy w Generatorze Grafików"
     message["From"] = f"{FROM_NAME} <{FROM_EMAIL}>"
@@ -59,12 +64,14 @@ def send_registration_email(recipient_email: str, recipient_name: str | None = N
     )
 
     try:
+        logger.debug(f"Connecting to SMTP server: {SMTP_HOST}:{SMTP_PORT}")
         with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=20) as smtp:
             smtp.starttls()
             smtp.login(SMTP_USER, SMTP_PASSWORD)
             smtp.send_message(message)
-    except Exception:
-        logger.exception("Failed to send registration email via Zoho SMTP.")
+        logger.info(f"Registration email successfully sent to: {recipient_email}")
+    except Exception as e:
+        logger.exception(f"Failed to send registration email to {recipient_email}: {str(e)}")
 
 def _build_reset_link(token: str) -> str:
     base = PASSWORD_RESET_URL
@@ -72,14 +79,19 @@ def _build_reset_link(token: str) -> str:
     return f"{base}{separator}token={token}"
 
 def send_password_reset_email(recipient_email: str, token: str, recipient_name: str | None = None) -> None:
+    logger.info(f"Attempting to send password reset email to: {recipient_email}")
+    
     if not recipient_email or not token:
         logger.warning("Missing recipient or token, skipping password reset email.")
         return
     if not _is_configured():
         logger.warning("Zoho SMTP not configured, skip sending password reset email.")
         return
+    
     friendly_name = recipient_name or recipient_email.split("@")[0]
     reset_link = _build_reset_link(token)
+    logger.debug(f"Preparing password reset email for: {friendly_name} ({recipient_email})")
+    
     message = EmailMessage()
     message["Subject"] = "Resetowanie hasła w Generatorze Grafików"
     message["From"] = f"{FROM_NAME} <{FROM_EMAIL}>"
@@ -94,9 +106,11 @@ def send_password_reset_email(recipient_email: str, token: str, recipient_name: 
         )
     )
     try:
+        logger.debug(f"Connecting to SMTP server: {SMTP_HOST}:{SMTP_PORT}")
         with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=20) as smtp:
             smtp.starttls()
             smtp.login(SMTP_USER, SMTP_PASSWORD)
             smtp.send_message(message)
-    except Exception:
-        logger.exception("Failed to send password reset email via Zoho SMTP.")
+        logger.info(f"Password reset email successfully sent to: {recipient_email}")
+    except Exception as e:
+        logger.exception(f"Failed to send password reset email to {recipient_email}: {str(e)}")

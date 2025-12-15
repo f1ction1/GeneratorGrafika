@@ -5,13 +5,20 @@ from sqlalchemy.orm import Session
 from models.User import User
 from schemas.auth import RegisterRequest
 from core.security import hash_password, create_jwt, verify_password, create_reset_token, verify_reset_token
+from core.logging_config import get_logger
+
+logger = get_logger(__name__)
 
 def register_user(db: Session, req: RegisterRequest) -> str:
+    logger.info(f"Registration attempt for email: {req.email}")
+    
     if req.password != req.password_confirm:
+        logger.warning(f"Password mismatch during registration for email: {req.email}")
         raise HTTPException(status_code=400, detail="Passwords do not match")
 
     existing = db.query(User).filter(User.email == req.email).first()
     if existing:
+        logger.warning(f"Registration failed - email already exists: {req.email}")
         raise HTTPException(status_code=400, detail="User with this email already exists")
 
     hashed = hash_password(req.password)
@@ -26,6 +33,8 @@ def register_user(db: Session, req: RegisterRequest) -> str:
     db.add(user)
     db.commit()
     db.refresh(user)
+    
+    logger.info(f"User registered successfully - ID: {user.id}, Email: {user.email}, Role: {user.role}")
 
     exp = int((datetime.utcnow() + timedelta(days=7)).timestamp())
     payload = {"id": str(user.id), "email": user.email, "role": user.role, "exp": exp}
@@ -33,12 +42,18 @@ def register_user(db: Session, req: RegisterRequest) -> str:
     return token
 
 def login_user(db: Session, email: str, password: str) -> str:
+    logger.info(f"Login attempt for email: {email}")
+    
     user = db.query(User).filter(User.email == email).first()
     if not user:
+        logger.warning(f"Login failed - user not found: {email}")
         raise HTTPException(status_code=400, detail="Invalid email or password")
 
-    if not verify_password(password, user.password): # type: ignore
+    if not verify_password(password, user.password):
+        logger.warning(f"Login failed - invalid password for email: {email}")
         raise HTTPException(status_code=400, detail="Invalid email or password")
+
+    logger.info(f"User logged in successfully - ID: {user.id}, Email: {user.email}")
 
     exp = int((datetime.utcnow() + timedelta(days=7)).timestamp())
     payload = {"id": str(user.id), "email": user.email, "role": user.role, "exp": exp}
