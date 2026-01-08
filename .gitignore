@@ -10,7 +10,7 @@ frontend/package-lock.json
 *.user
 *.userosscache
 *.sln.docstates
-*.env
+#*.env
 
 # Ignore env backend folder
 env/
