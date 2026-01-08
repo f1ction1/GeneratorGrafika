@@ -1,238 +1,128 @@
 import React, { useState, useEffect } from 'react';
 import './Dashboard.css';
-import { 
-  StatCard, 
-  Card, 
-  Badge, 
-  Button 
-} from '../components/dashboard';
 import { useNavigate } from 'react-router-dom';
 
 // Import icons
 import { 
   FaCalendarAlt, 
-  FaClipboardList, 
-  FaExclamationTriangle,
   FaUsers,
-  FaClock,
-  FaCheckCircle
+  FaCog,
+  FaChartLine,
 } from 'react-icons/fa';
 
 function DashboardPage() {
   const navigate = useNavigate();
-  // TODO: Pobierz z API
-  const [userRole, setUserRole] = useState('employer'); // 'employer' lub 'employee'
-  const [userName, setUserName] = useState('Jan Kowalski');
+  
+  const [userName, setUserName] = useState('');
+  const [loading, setLoading] = useState(true);
 
-  // Dane dla pracodawcy
-  const employerStats = [
-    { 
-      title: 'Oczekujące wnioski', 
-      value: '3', 
-      color: 'warning',
-      icon: <FaClipboardList />,
-      change: '+1'
-    },
-    { 
-      title: 'Nieobsadzone zmiany', 
-      value: '2', 
-      color: 'danger',
-      icon: <FaExclamationTriangle />,
-      change: '-1'
-    },
-  ];
+  useEffect(() => {
+    fetchUserData();
+  }, []);
 
-  // Dane dla pracownika
-  const employeeStats = [
-    { 
-      title: 'Nadchodzące zmiany', 
-      value: '5', 
-      color: 'primary',
-      icon: <FaCalendarAlt />,
-      change: '0'
-    },
-    { 
-      title: 'Godziny w tym miesiącu', 
-      value: '142h', 
-      color: 'success',
-      icon: <FaClock />,
-      change: '+8h'
-    },
-  ];
+  const fetchUserData = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        navigate('/auth');
+        return;
+      }
 
-  // Najbliższa zmiana pracownika
-  const nextShift = {
-    date: 'Dziś',
-    time: '08:00 - 16:00',
-    position: 'Grafik',
-    status: 'Potwierdzona'
+      const response = await fetch('http://localhost:8000/users/me', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 401) {
+        localStorage.removeItem('token');
+        navigate('/auth');
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch user data');
+      }
+
+      const data = await response.json();
+      setUserName(`${data.first_name} ${data.last_name}`);
+    } catch (err) {
+      console.error('Error fetching user data:', err);
+      setUserName('Użytkowniku');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Event handlers
   const handleNavigate = (path) => {
     navigate(path);
   };
 
-  // Widok dla pracodawcy
-  const renderEmployerDashboard = () => (
+  if (loading) {
+    return (
+      <div className="dashboard-page">
+        <div className="dashboard-loading">Ładowanie...</div>
+      </div>
+    );
+  }
+
+  return (
     <div className="dashboard-page">
       <div className="dashboard-header">
         <div>
           <h1 className="page-title">Witaj, {userName}!</h1>
-          <p className="page-subtitle">Przegląd firmy</p>
+          <p className="page-subtitle">Co chcesz dzisiaj zrobić?</p>
         </div>
-        {/* Tymczasowy przełącznik do testowania */}
-        <Button 
-          color="secondary" 
-          size="sm" 
-          onClick={() => setUserRole('employee')}
-        >
-          Przełącz na widok pracownika(dev)
-        </Button>
       </div>
 
-      {/* Tylko najważniejsze alerty */}
-      {employerStats.some(stat => parseInt(stat.value) > 0) && (
-        <div className="stats-grid">
-          {employerStats.map((stat, idx) => (
-            parseInt(stat.value) > 0 && (
-              <StatCard
-                key={idx}
-                title={stat.title}
-                value={stat.value}
-                color={stat.color}
-                icon={stat.icon}
-                change={stat.change}
-              />
-            )
-          ))}
-        </div>
-      )}
-
-      {/* Główne akcje */}
-      <Card header="Co chcesz zrobić?" color="primary">
-        <div className="dashboard-actions-grid">
-          <button 
-            className="action-card"
-            onClick={() => handleNavigate('/dashboard/employees')}
-          >
-            <div className="action-icon">
-              <FaUsers />
-            </div>
-            <h3>Zarządzaj pracownikami</h3>
-            <p>Dodaj, edytuj lub usuń pracowników</p>
-          </button>
-
-          <button 
-            className="action-card"
-            onClick={() => handleNavigate('/dashboard/schedule')}
-          >
-            <div className="action-icon">
-              <FaCalendarAlt />
-            </div>
-            <h3>Grafik</h3>
-            <p>Generuj i zarządzaj grafikiem pracy</p>
-          </button>
-
-          <button 
-            className="action-card"
-            onClick={() => handleNavigate('/dashboard/schedule')}
-          >
-            <div className="action-icon">
-              <FaClipboardList />
-            </div>
-            <h3>Wnioski pracowników</h3>
-            <p>Przeglądaj i zatwierdzaj wnioski</p>
-          </button>
-
-          <button 
-            className="action-card"
-            onClick={() => handleNavigate('/dashboard/company')}
-          >
-            <div className="action-icon">
-              <FaExclamationTriangle />
-            </div>
-            <h3>Ustawienia firmy</h3>
-            <p>Zarządzaj danymi firmy</p>
-          </button>
-        </div>
-      </Card>
-    </div>
-  );
-
-  // Widok dla pracownika
-  const renderEmployeeDashboard = () => (
-    <div className="dashboard-page">
-      <div className="dashboard-header">
-        <div>
-          <h1 className="page-title">Witaj, {userName}!</h1>
-          <p className="page-subtitle">Twój dzisiejszy dzień</p>
-        </div>
-        {/* Tymczasowy przełącznik do testowania */}
-        <Button 
-          color="secondary" 
-          size="sm" 
-          onClick={() => setUserRole('employer')}
+      {/* Główne funkcjonalności - ładne karty */}
+      <div className="dashboard-actions-grid">
+        <button 
+          className="action-card action-card-primary"
+          onClick={() => handleNavigate('/dashboard/employees')}
         >
-          Przełącz na widok pracodawcy(dev)
-        </Button>
-      </div>
+          <div className="action-icon">
+            <FaUsers />
+          </div>
+          <h3>Pracownicy</h3>
+          <p>Zarządzaj listą pracowników swojej firmy</p>
+        </button>
 
-      {/* Najbliższa zmiana - duża karta */}
-      <Card header="Twoja najbliższa zmiana" color="primary">
-        <div className="next-shift-card">
-          <div className="shift-date">
+        <button 
+          className="action-card action-card-success"
+          onClick={() => handleNavigate('/dashboard/schedule')}
+        >
+          <div className="action-icon">
             <FaCalendarAlt />
-            <span>{nextShift.date}</span>
           </div>
-          <div className="shift-time">{nextShift.time}</div>
-          <div className="shift-details">
-            <span>Stanowisko: <strong>{nextShift.position}</strong></span>
-            <Badge color="success">{nextShift.status}</Badge>
-          </div>
-        </div>
-      </Card>
+          <h3>Grafik</h3>
+          <p>Generuj i przeglądaj harmonogram pracy</p>
+        </button>
 
-      {/* Statystyki pracownika */}
-      <div className="stats-grid">
-        {employeeStats.map((stat, idx) => (
-          <StatCard
-            key={idx}
-            title={stat.title}
-            value={stat.value}
-            color={stat.color}
-            icon={stat.icon}
-            change={stat.change}
-          />
-        ))}
+        <button 
+          className="action-card action-card-info"
+          onClick={() => handleNavigate('/dashboard/employer')}
+        >
+          <div className="action-icon">
+            <FaChartLine />
+          </div>
+          <h3>Dane firmy</h3>
+          <p>Zarządzaj informacjami o Twojej firmie</p>
+        </button>
+
+        <button 
+          className="action-card action-card-secondary"
+          onClick={() => handleNavigate('/dashboard/profile')}
+        >
+          <div className="action-icon">
+            <FaCog />
+          </div>
+          <h3>Profil</h3>
+          <p>Ustawienia konta i preferencje</p>
+        </button>
       </div>
-
-      {/* Szybkie akcje dla pracownika */}
-      <Card header="Szybkie akcje" color="secondary">
-        <div className="quick-actions-employee">
-          <Button 
-            color="primary" 
-            onClick={() => handleNavigate('/dashboard/schedule')}
-            style={{ width: '100%' }}
-          >
-            <FaCalendarAlt style={{ marginRight: '0.5rem' }} />
-            Zobacz pełny grafik
-          </Button>
-          <Button 
-            color="info" 
-            variant="outline"
-            onClick={() => alert('Funkcja w budowie')}
-            style={{ width: '100%' }}
-          >
-            <FaClipboardList style={{ marginRight: '0.5rem' }} />
-            Złóż wniosek
-          </Button>
-        </div>
-      </Card>
     </div>
   );
-
-  return userRole === 'employer' ? renderEmployerDashboard() : renderEmployeeDashboard();
 }
 
 export default DashboardPage;

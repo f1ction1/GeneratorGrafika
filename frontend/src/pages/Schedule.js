@@ -17,7 +17,10 @@ import {
   FaExclamationTriangle
 } from 'react-icons/fa';
 import ScheduleSummary from '../components/schedule/ScheduleSummary';
+<<<<<<< HEAD
 import fetcher from '../api/fetcher';
+=======
+>>>>>>> 789b4a3a237ea5c431642c51e2985abd65152506
 
 function calculateShiftLength(start, end) {
   if (start < end) {
@@ -60,7 +63,11 @@ export async function action({ request }) {
         company_work_mode: formData.get('company_work_mode')
       };
         
+<<<<<<< HEAD
       const response = await fetcher('/schedule/generate', {
+=======
+      const response = await fetch('http://127.0.0.1:8000/schedule/generate', {
+>>>>>>> 789b4a3a237ea5c431642c51e2985abd65152506
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

@@ -14,7 +14,10 @@ import {
   FaCheckCircle,
   FaExclamationTriangle,
 } from 'react-icons/fa';
+<<<<<<< HEAD
 import fetcher from '../api/fetcher';
+=======
+>>>>>>> 789b4a3a237ea5c431642c51e2985abd65152506
 
 export default function ProfilePage() {
   const navigate = useNavigate();
@@ -44,7 +47,11 @@ export default function ProfilePage() {
         return;
       }
 
+<<<<<<< HEAD
       const response = await fetcher('/users/me', {
+=======
+      const response = await fetch('http://localhost:8000/users/me', {
+>>>>>>> 789b4a3a237ea5c431642c51e2985abd65152506
         headers: {
           'Authorization': `Bearer ${token}`,
         },
