@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import './Layout.css';
 import fetcher from '../api/fetcher';

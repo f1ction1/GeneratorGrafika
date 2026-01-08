@@ -13,7 +13,6 @@ import ResetPasswordPage from './pages/ResetPassword';
 import DashboardPage from './pages/Dashboard';
 import EmployeesPage from './pages/Employees';
 import SchedulePage, { action as SchedulePageAction } from './pages/Schedule';
-import ResetPasswordPage from './pages/ResetPassword';
 import ProfilePage from './pages/Profile';
 
 import AppLayout from './components/Layout';
