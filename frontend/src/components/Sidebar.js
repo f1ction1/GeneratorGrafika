@@ -14,7 +14,8 @@ import {
   FaSignOutAlt,
   FaMoon,
   FaSun,
-  FaBriefcase
+  FaBriefcase,
+  FaUserCircle
 } from 'react-icons/fa';
 import { useTheme } from '../context/ThemeContext';
 import './Sidebar.css';
@@ -69,6 +70,12 @@ function Sidebar() {
           <NavLink to="/dashboard" className="nav-item" end>
             <FaTachometerAlt className="nav-icon" />
             {isOpen && <span>Dashboard</span>}
+          </NavLink>
+
+          {/* Profile */}
+          <NavLink to="/dashboard/profile" className="nav-item">
+            <FaUserCircle className="nav-icon" />
+            {isOpen && <span>My Profile</span>}
           </NavLink>
 
           {/* Management Section */}

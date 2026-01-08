@@ -20,7 +20,6 @@ import {
 
 function DashboardPage() {
   const navigate = useNavigate();
-  
   // TODO: Pobierz z API
   const [userRole, setUserRole] = useState('employer'); // 'employer' lub 'employee'
   const [userName, setUserName] = useState('Jan Kowalski');

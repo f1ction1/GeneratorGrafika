@@ -1,9 +1,10 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
+from core.settings import settings
 
 
-URL_DATABASE = 'YOUR_URL'
+URL_DATABASE = f'{settings.database_url}'
 
 engine = create_engine(URL_DATABASE)
 

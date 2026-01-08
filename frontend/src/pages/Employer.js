@@ -14,6 +14,7 @@ import {
   FaCheckCircle,
   FaExclamationTriangle,
 } from 'react-icons/fa';
+import fetcher from '../api/fetcher';
 
 // Loader function - fetches employer data
 export async function loader() {
@@ -23,7 +24,7 @@ export async function loader() {
         throw new Response('Unauthorized', { status: 401 });
     }
 
-    const response = await fetch('http://127.0.0.1:8000/employer', {
+    const response = await fetcher('/employer', {
         headers: {
         'Authorization': `Bearer ${token}`,
         },
@@ -59,7 +60,7 @@ export async function action({ request }) {
         address: formData.get('address'),
         };
 
-        const response = await fetch('http://localhost:8000/employer', {
+        const response = await fetcher('/employer', {
             method: 'PUT',
             headers: {
                 'Authorization': `Bearer ${token}`,
