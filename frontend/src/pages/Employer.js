@@ -41,7 +41,7 @@ export async function loader() {
     } catch (error) {
     console.error('Loader error:',error );
 
-
+        return null;
     }
 }
 
