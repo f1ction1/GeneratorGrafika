@@ -7,6 +7,16 @@
   margin: 0 auto;
 }
 
+/* Loading state */
+.dashboard-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+}
+
 /* Page Header */
 .dashboard-header {
   display: flex;
@@ -47,66 +57,132 @@
   }
 }
 
-/* Dashboard Actions Grid - dla pracodawcy */
+/* Dashboard Actions Grid - główne karty nawigacyjne */
 .dashboard-actions-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
   padding: 1rem 0;
+  margin-top: 2rem;
 }
 
 @media (max-width: 768px) {
   .dashboard-actions-grid {
     grid-template-columns: 1fr;
+    gap: 1.25rem;
   }
 }
 
 .action-card {
   background: var(--card-bg);
-  border: 2px solid var(--border-color);
-  border-radius: 0.5rem;
-  padding: 2rem 1.5rem;
+  border: 2px solid transparent;
+  border-radius: 1rem;
+  padding: 2.5rem 2rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.75rem;
+  gap: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.action-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(17, 153, 142, 0.05) 0%, rgba(56, 239, 125, 0.05) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .action-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
   border-color: var(--color-primary);
+}
+
+.action-card:hover::before {
+  opacity: 1;
+}
+
+.action-card:active {
   transform: translateY(-4px);
-  box-shadow: var(--shadow-primary);
 }
 
 .action-icon {
-  width: 64px;
-  height: 64px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
   background: var(--gradient-primary);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.75rem;
+  font-size: 2.25rem;
   color: white;
   margin-bottom: 0.5rem;
-  box-shadow: var(--shadow-primary);
+  box-shadow: 0 8px 16px rgba(17, 153, 142, 0.3);
+  transition: all 0.3s ease;
+  z-index: 1;
+}
+
+.action-card:hover .action-icon {
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 12px 24px rgba(17, 153, 142, 0.4);
 }
 
 .action-card h3 {
   margin: 0;
-  font-size: 1.125rem;
-  font-weight: 600;
+  font-size: 1.375rem;
+  font-weight: 700;
   color: var(--text-primary);
+  z-index: 1;
 }
 
 .action-card p {
   margin: 0;
-  font-size: 0.875rem;
+  font-size: 0.938rem;
   color: var(--text-secondary);
-  line-height: 1.4;
+  line-height: 1.5;
+  z-index: 1;
+}
+
+/* Warianty kolorystyczne kart */
+.action-card-primary:hover {
+  border-color: #11998e;
+}
+
+.action-card-primary .action-icon {
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+}
+
+.action-card-success:hover {
+  border-color: #38ef7d;
+}
+
+.action-card-success .action-icon {
+  background: linear-gradient(135deg, #38ef7d 0%, #11998e 100%);
+}
+
+.action-card-info:hover {
+  border-color: #4facfe;
+}
+
+.action-card-info .action-icon {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.action-card-secondary:hover {
+  border-color: #868e96;
+}
+
+.action-card-secondary .action-icon {
+  background: linear-gradient(135deg, #868e96 0%, #596164 100%);
 }
 
 /* Next Shift Card - dla pracownika */

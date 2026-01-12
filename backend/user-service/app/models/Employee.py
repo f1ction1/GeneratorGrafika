@@ -8,7 +8,7 @@ class Employee(Base):
     first_name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)
     position = Column(String, nullable=True)
-    employment_fraction = Column(Numeric(2,1), nullable=False)
+    employment_fraction = Column(Numeric(3,2), nullable=False)
     employer_id = Column(Integer, ForeignKey("employers.id", ondelete="CASCADE"), nullable=False)
 
     employer = relationship("Employer", back_populates="employees")

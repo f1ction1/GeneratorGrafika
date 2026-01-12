@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import './Auth.css';
+import fetcher from '../api/fetcher';
 
 function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
+  const [isResetMode, setIsResetMode] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -12,6 +14,7 @@ function AuthPage() {
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
 
   // Sprawdź czy użytkownik jest już zalogowany
   useEffect(() => {
@@ -24,7 +27,15 @@ function AuthPage() {
 
   const toggleMode = () => {
     setIsLogin(!isLogin);
+    setIsResetMode(false);
     setError('');
+    setSuccessMessage('');
+  };
+
+  const toggleResetMode = () => {
+    setIsResetMode(!isResetMode);
+    setError('');
+    setSuccessMessage('');
   };
 
   const handleInputChange = (e) => {
@@ -37,10 +48,30 @@ function AuthPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setSuccessMessage('');
     setLoading(true);
 
     try {
-      if (!isLogin) {
+      if (isResetMode) {
+        // Password reset request
+        const response = await fetch('http://localhost:8000/auth/password/reset/request', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: formData.email
+          })
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.detail || 'Reset request failed');
+        }
+
+        setSuccessMessage('If the email exists, password reset instructions were sent.');
+        setFormData({ ...formData, email: '' });
+      } else if (!isLogin) {
         // Rejestracja
         if (formData.password !== formData.confirmPassword) {
           setError('Hasła nie pasują do siebie');
@@ -48,7 +79,7 @@ function AuthPage() {
           return;
         }
 
-        const response = await fetch('http://localhost:8000/auth/register', {
+        const response = await fetcher('/auth/register', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -72,11 +103,13 @@ function AuthPage() {
         console.log('Zarejestrowano pomyślnie, token:', data.access_token);
         
         localStorage.setItem('token', data.access_token);
-        window.location.href = '/dashboard';
+        
+        // Sprawdź status użytkownika i przekieruj do odpowiedniej strony
+        await checkUserStatusAndRedirect(data.access_token);
         
       } else {
         // Logowanie
-        const response = await fetch('http://localhost:8000/auth/login', {
+        const response = await fetcher('/auth/login', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -96,12 +129,43 @@ function AuthPage() {
         console.log('Zalogowano pomyślnie, token:', data.access_token);
         
         localStorage.setItem('token', data.access_token);
-        window.location.href = '/dashboard';
+        
+        // Sprawdź status użytkownika i przekieruj do odpowiedniej strony
+        await checkUserStatusAndRedirect(data.access_token);
       }
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Funkcja sprawdzająca status użytkownika i przekierowująca
+  const checkUserStatusAndRedirect = async (token) => {
+    try {
+      // Sprawdź czy użytkownik ma employer poprzez GET /employer
+      const employerResponse = await fetch('/employer', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      // Jeśli 404, użytkownik nie ma employer - przekieruj do complete-registration
+      if (employerResponse.status === 404) {
+        window.location.href = '/complete-registration';
+      } 
+      // Jeśli 200, użytkownik ma employer - przekieruj do dashboard
+      else if (employerResponse.ok) {
+        window.location.href = '/dashboard';
+      } 
+      // Inne błędy - domyślnie przekieruj do dashboard (może być manager bez employer)
+      else {
+        window.location.href = '/dashboard';
+      }
+    } catch (err) {
+      console.error('Błąd sprawdzania statusu:', err);
+      // W przypadku błędu, przekieruj do dashboard
+      window.location.href = '/dashboard';
     }
   };
 
@@ -117,12 +181,14 @@ function AuthPage() {
         <div className="auth-card">
           <div className="auth-header">
             <h1 className="auth-title">
-              {isLogin ? 'Witaj ponownie!' : 'Dołącz do nas'}
+              {isResetMode ? 'Reset hasła' : (isLogin ? 'Witaj ponownie!' : 'Dołącz do nas')}
             </h1>
             <p className="auth-subtitle">
-              {isLogin 
-                ? 'Zaloguj się, aby kontynuować' 
-                : 'Stwórz konto i zacznij korzystać z Schedulr'}
+              {isResetMode 
+                ? 'Wprowadź swój email, aby otrzymać link resetujący'
+                : (isLogin 
+                  ? 'Zaloguj się, aby kontynuować' 
+                  : 'Stwórz konto i zacznij korzystać z Schedulr')}
             </p>
           </div>
 
@@ -138,8 +204,20 @@ function AuthPage() {
                 {error}
               </div>
             )}
+
+            {successMessage && (
+              <div className="success-message" style={{
+                padding: '10px',
+                backgroundColor: '#efe',
+                color: '#3c3',
+                borderRadius: '4px',
+                marginBottom: '15px'
+              }}>
+                {successMessage}
+              </div>
+            )}
             
-            {!isLogin && (
+            {!isLogin && !isResetMode && (
               <>
                 <div className="form-group">
                   <label htmlFor="firstName">Imię</label>
@@ -178,57 +256,75 @@ function AuthPage() {
               />
             </div>
 
-            <div className="form-group">
-              <label htmlFor="password">Hasło</label>
-              <input 
-                type="password" 
-                id="password" 
-                placeholder="••••••••"
-                value={formData.password}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
+            {!isResetMode && (
+              <>
+                <div className="form-group">
+                  <label htmlFor="password">Hasło</label>
+                  <input 
+                    type="password" 
+                    id="password" 
+                    placeholder="••••••••"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
 
-            {!isLogin && (
-              <div className="form-group">
-                <label htmlFor="confirmPassword">Potwierdź hasło</label>
-                <input 
-                  type="password" 
-                  id="confirmPassword" 
-                  placeholder="••••••••"
-                  value={formData.confirmPassword}
-                  onChange={handleInputChange}
-                  required={!isLogin}
-                />
-              </div>
+                {!isLogin && (
+                  <div className="form-group">
+                    <label htmlFor="confirmPassword">Potwierdź hasło</label>
+                    <input 
+                      type="password" 
+                      id="confirmPassword" 
+                      placeholder="••••••••"
+                      value={formData.confirmPassword}
+                      onChange={handleInputChange}
+                      required={!isLogin}
+                    />
+                  </div>
+                )}
+              </>
             )}
 
-            {isLogin && (
+            {isLogin && !isResetMode && (
               <div className="form-extras">
                 <label className="checkbox-label">
                   <input type="checkbox" />
                   <span>Zapamiętaj mnie</span>
                 </label>
-                <a href="#" className="forgot-password">Zapomniałeś hasła?</a>
+                <button type="button" onClick={toggleResetMode} className="forgot-password">
+                  Zapomniałeś hasła?
+                </button>
               </div>
             )}
 
             <button type="submit" className="btn btn-primary btn-full" disabled={loading}>
-              {loading ? 'Ładowanie...' : (isLogin ? 'Zaloguj się' : 'Zarejestruj się')}
+              {loading ? 'Ładowanie...' : (isResetMode ? 'Wyślij link resetujący' : (isLogin ? 'Zaloguj się' : 'Zarejestruj się'))}
             </button>
+
+            {isResetMode && (
+              <button 
+                type="button" 
+                onClick={toggleResetMode} 
+                className="btn btn-full"
+                style={{ marginTop: '10px', background: 'rgba(255,255,255,0.1)', color: 'white' }}
+              >
+                Powrót do logowania
+              </button>
+            )}
           </form>
 
-
-          <div className="auth-footer">
-            <p>
-              {isLogin ? 'Nie masz konta?' : 'Masz już konto?'}
-              {' '}
-              <button type="button" onClick={toggleMode} className="link-button">
-                {isLogin ? 'Zarejestruj się' : 'Zaloguj się'}
-              </button>
-            </p>
-          </div>
+          {!isResetMode && (
+            <div className="auth-footer">
+              <p>
+                {isLogin ? 'Nie masz konta?' : 'Masz już konto?'}
+                {' '}
+                <button type="button" onClick={toggleMode} className="link-button">
+                  {isLogin ? 'Zarejestruj się' : 'Zaloguj się'}
+                </button>
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </main>
