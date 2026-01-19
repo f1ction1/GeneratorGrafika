@@ -81,6 +81,8 @@ class EmployeeUpdate(BaseModel):
     def validate_position(cls, v: Optional[str]) -> Optional[str]:
         if v is None or v == "":
             return None
+        return v
+        
 
 class EmployeeDelete(BaseModel):
     id: int 
