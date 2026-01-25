@@ -34,8 +34,6 @@ class EmployerService:
         return EmployerBase(name=employer.name, address=employer.address)
 
     def update_employer(self, user: models.User, data: EmployerUpdate):
-        if user.employer_id is not None:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User already belongs to an employer")
         if user.role != "owner":
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,

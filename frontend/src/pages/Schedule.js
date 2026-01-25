@@ -1,12 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useActionData, Form, useNavigation } from 'react-router-dom';
 import styles from './Schedule.module.css';
-import { 
-  Card, 
+import {
+  Card,
   Button,
   Badge
 } from '../components/dashboard';
-import { 
+import {
   FaPlus,
   FaMinus,
   FaChevronLeft,
@@ -38,7 +38,7 @@ export async function action({ request }) {
 
       const shifts = [];
       const shiftCount = parseInt(formData.get('shift_count'));
-      
+
       for (let i = 0; i < shiftCount; i++) {
         shifts.push({
           name: formData.get(`shift_${i}_name`),
@@ -48,19 +48,39 @@ export async function action({ request }) {
         });
       }
 
+      const preferences = [];
+      const prefCount = parseInt(formData.get('pref_count'));
+
+      for (let i = 0; i < prefCount; i++) {
+        const employee_id = formData.get(`pref_${i}_employee_id`);
+        console.log("employee_id", employee_id);
+        const day = formData.get(`pref_${i}_day`);
+        console.log("day", day);
+        const penalty = formData.get(`pref_${i}_penalty`);
+
+        if (employee_id && day) {
+          preferences.push({
+            employee_id: parseInt(employee_id),
+            day: parseInt(day),
+            penalty: parseInt(penalty || '50'),
+          });
+        }
+      }
+
       const requestData = {
         month: formData.get('month'),
         year: formData.get('year'),
         shifts: shifts,
         holidays_mode: formData.get('holidays_mode') === 'on',
         rules: {
-            min_rest_hours: parseInt(formData.get('min_break_hours')),
-            max_consecutive_days: 6,
-            standard_daily_hours: 8
+          min_rest_hours: parseInt(formData.get('min_break_hours')),
+          max_consecutive_days: 6,
+          standard_daily_hours: 8
         },
-        company_work_mode: formData.get('company_work_mode')
+        company_work_mode: formData.get('company_work_mode'),
+        preferences: preferences,
       };
-        
+
       const response = await fetcher('/schedule/generate', {
         method: 'POST',
         headers: {
@@ -95,12 +115,76 @@ const DAY_NAMES = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 export default function Schedule() {
   const actionData = useActionData();
   const navigation = useNavigation();
-  
+
+  const [employees, setEmployees] = useState([]);
+  const [employeesLoading, setEmployeesLoading] = useState(false);
+  const [employeesError, setEmployeesError] = useState('');
+
+  const [preferences, setPreferences] = useState([]);
+
+  useEffect(() => {
+    const loadEmployees = async () => {
+      try {
+        setEmployeesLoading(true);
+        setEmployeesError('');
+
+        const token = localStorage.getItem('token');
+        if (!token) {
+          setEmployeesError('Not authenticated');
+          return;
+        }
+
+        const response = await fetcher('/employee', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (!response.ok) {
+          if (response.status === 404) {
+            setEmployees([]);
+            return;
+          }
+          throw new Error('Failed to fetch employees');
+        }
+
+        const data = await response.json();
+        setEmployees(Array.isArray(data) ? data : []);
+      } catch (e) {
+        setEmployeesError(e?.message || 'Failed to load employees');
+      } finally {
+        setEmployeesLoading(false);
+      }
+    };
+
+    loadEmployees();
+  }, []);
+
+  const addPreference = () => {
+    setPreferences(prev => [
+      ...prev,
+      { employee_id: '', day: 1, penalty: 50 }
+    ]);
+  };
+
+  const removePreference = (index) => {
+    setPreferences(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const updatePreference = (index, field, value) => {
+    setPreferences(prev => {
+      const copy = [...prev];
+      copy[index] = { ...copy[index], [field]: value };
+      return copy;
+    });
+  };
+
+
+
+
   const [showForm, setShowForm] = useState(true);
   const [currentWeek, setCurrentWeek] = useState(0);
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-  
+
   const [shifts, setShifts] = useState([
     { name: 'Morning', start: '6', end: '14', employees: 2 },
     { name: 'Afternoon', start: '14', end: '22', employees: 2 },
@@ -121,14 +205,14 @@ export default function Schedule() {
     return new Date(year, month, 0).getDate();
   };
 
-  const scheduleByDay = hasSchedule 
+  const scheduleByDay = hasSchedule
     ? scheduleData.reduce((acc, dayEntry) => {
-        acc[dayEntry.day] = {};
-        dayEntry.shifts.forEach(shiftEntry => {
-          acc[dayEntry.day][shiftEntry.shift] = shiftEntry.employees;
-        });
-        return acc;
-      }, {})
+      acc[dayEntry.day] = {};
+      dayEntry.shifts.forEach(shiftEntry => {
+        acc[dayEntry.day][shiftEntry.shift] = shiftEntry.employees;
+      });
+      return acc;
+    }, {})
     : {};
 
   const daysInMonth = getDaysInMonth(displayMonth, displayYear);
@@ -144,7 +228,7 @@ export default function Schedule() {
   if (hasSchedule && Object.keys(scheduleByDay).length > 0) {
     const firstDayWithShifts = Object.values(scheduleByDay).find(day => Object.keys(day).length > 0);
     if (firstDayWithShifts) {
-        shiftTypes = Object.keys(firstDayWithShifts);
+      shiftTypes = Object.keys(firstDayWithShifts);
     }
   }
 
@@ -173,7 +257,7 @@ export default function Schedule() {
   const getDayOfWeek = (day, month, year) => {
     const date = new Date(year, month - 1, day);
     const dayOfWeek = date.getDay();
-    return dayOfWeek === 0 ? 6 : dayOfWeek - 1; 
+    return dayOfWeek === 0 ? 6 : dayOfWeek - 1;
   };
 
   return (
@@ -184,8 +268,8 @@ export default function Schedule() {
           <h1 className={styles.pageTitle}>Schedule Generation</h1>
           <p className={styles.pageSubtitle}>Automatically generate work schedules for the month</p>
         </div>
-        <Button 
-          color="primary" 
+        <Button
+          color="primary"
           onClick={() => setShowForm(!showForm)}
         >
           <FaCog /> {showForm ? 'Hide Settings' : 'Show Settings'}
@@ -214,9 +298,9 @@ export default function Schedule() {
             <div className={styles.formGrid}>
               <div className={styles.formGroup}>
                 <label>Month *</label>
-                <select 
-                  name="month" 
-                  required 
+                <select
+                  name="month"
+                  required
                   className={styles.formInput}
                   value={selectedMonth}
                   onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
@@ -229,10 +313,10 @@ export default function Schedule() {
 
               <div className={styles.formGroup}>
                 <label>Year *</label>
-                <input 
-                  type="number" 
-                  name="year" 
-                  required 
+                <input
+                  type="number"
+                  name="year"
+                  required
                   min="2024"
                   max="2030"
                   value={selectedYear}
@@ -243,10 +327,10 @@ export default function Schedule() {
 
               <div className={styles.formGroup}>
                 <label>Minimum Break Between Shifts (hours) *</label>
-                <input 
-                  type="number" 
-                  name="min_break_hours" 
-                  required 
+                <input
+                  type="number"
+                  name="min_break_hours"
+                  required
                   min="8"
                   max="24"
                   defaultValue="11"
@@ -265,17 +349,17 @@ export default function Schedule() {
 
               <div className={styles.formGroupCheckBox}>
                 <label>Holidays mode</label>
-                <input name="holidays_mode" type='checkbox'/>
+                <input name="holidays_mode" type='checkbox' />
               </div>
             </div>
 
             <div className={styles.shiftsSection}>
               <div className={styles.sectionHeader}>
                 <h3>Work Shifts</h3>
-                <Button 
+                <Button
                   type="button"
-                  color="success" 
-                  size="sm" 
+                  color="success"
+                  size="sm"
                   onClick={addShift}
                 >
                   <FaPlus /> Add Shift
@@ -287,10 +371,10 @@ export default function Schedule() {
                   <div className={styles.shiftHeader}>
                     <span>Shift {index + 1}</span>
                     {shifts.length > 1 && (
-                      <Button 
+                      <Button
                         type="button"
-                        color="danger" 
-                        size="sm" 
+                        color="danger"
+                        size="sm"
                         variant="ghost"
                         onClick={() => removeShift(index)}
                       >
@@ -302,7 +386,7 @@ export default function Schedule() {
                   <div className={styles.shiftFields}>
                     <div className={styles.formGroup}>
                       <label>Shift Name</label>
-                      <input 
+                      <input
                         type="text"
                         name={`shift_${index}_name`}
                         value={shift.name}
@@ -314,7 +398,7 @@ export default function Schedule() {
                     </div>
                     <div className={styles.formGroup}>
                       <label>Start Time</label>
-                      <input 
+                      <input
                         type="number"
                         name={`shift_${index}_start`}
                         value={shift.start}
@@ -325,7 +409,7 @@ export default function Schedule() {
                     </div>
                     <div className={styles.formGroup}>
                       <label>End Time</label>
-                      <input 
+                      <input
                         type="number"
                         name={`shift_${index}_end`}
                         value={shift.end}
@@ -336,7 +420,7 @@ export default function Schedule() {
                     </div>
                     <div className={styles.formGroup}>
                       <label>Employees</label>
-                      <input 
+                      <input
                         type="number"
                         name={`shift_${index}_employees`}
                         value={shift.employees}
@@ -351,11 +435,119 @@ export default function Schedule() {
                 </div>
               ))}
             </div>
+            <div className={styles.shiftsSection}>
+              <div className={styles.sectionHeader}>
+                <h3>Preferences</h3>
+                <Button
+                  type="button"
+                  color="success"
+                  size="sm"
+                  onClick={addPreference}
+                  disabled={employeesLoading || employees.length === 0}
+                >
+                  <FaPlus /> Add preference
+                </Button>
+              </div>
+
+              {employeesError && (
+                <div style={{ marginTop: 6, fontSize: 12, color: 'var(--danger, #dc3545)' }}>
+                  {employeesError}
+                </div>
+              )}
+
+              {preferences.length === 0 ? (
+                <div style={{ padding: '12px 0', opacity: 0.8 }}>
+                  No preferences added yet.
+                </div>
+              ) : (
+                preferences.map((pref, index) => (
+                  <div key={index} className={styles.shiftItem}>
+                    <div className={styles.shiftHeader}>
+                      <span>Preference {index + 1}</span>
+                      <Button
+                        type="button"
+                        color="danger"
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => removePreference(index)}
+                      >
+                        <FaMinus />
+                      </Button>
+                    </div>
+
+                    <div className={styles.shiftFields}>
+                      {/* Employee select */}
+                      <div className={styles.formGroup}>
+                        <label>Employee</label>
+                        <select
+                          className={styles.formInput}
+                          value={pref.employee_id}
+                          onChange={(e) => updatePreference(index, 'employee_id', e.target.value)}
+                          disabled={employeesLoading || employees.length === 0}
+                          required
+                        >
+                          <option value="">
+                            {employeesLoading
+                              ? 'Loading employees...'
+                              : employees.length === 0
+                                ? 'No employees available'
+                                : 'Select employee'}
+                          </option>
+
+                          {employees.map(emp => (
+                            <option key={emp.id} value={String(emp.id)}>
+                              {emp.first_name} {emp.last_name}{emp.position ? ` — ${emp.position}` : ''}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* Day select */}
+                      <div className={styles.formGroup}>
+                        <label>Day of month</label>
+                        <select
+                          className={styles.formInput}
+                          value={pref.day}
+                          onChange={(e) => updatePreference(index, 'day', parseInt(e.target.value))}
+                          required
+                        >
+                          {Array.from({ length: daysInMonth }, (_, i) => i + 1).map(d => (
+                            <option key={d} value={d}>{d}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className={styles.formGroup}>
+                        <label>Penalty</label>
+                        <input
+                          type="number"
+                          className={styles.formInput}
+                          min="0"
+                          max="1000"
+                          step="1"
+                          value={pref.penalty ?? 50}
+                          onChange={(e) => updatePreference(index, 'penalty', parseInt(e.target.value || '0', 10))}
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    {/* скрытые инпуты чтобы это ушло в action() */}
+                    <input type="hidden" name={`pref_${index}_employee_id`} value={pref.employee_id} />
+                    <input type="hidden" name={`pref_${index}_day`} value={pref.day} />
+                    <input type="hidden" name={`pref_${index}_penalty`} value={pref.penalty ?? 50} />
+                  </div>
+                ))
+              )}
+
+              {/* сколько пожеланий всего */}
+              <input type="hidden" name="pref_count" value={preferences.length} />
+            </div>
+
 
             <div className={styles.formActions}>
-              <Button 
-                type="submit" 
-                color="success" 
+              <Button
+                type="submit"
+                color="success"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? 'Generating...' : 'Generate Schedule'}
@@ -408,12 +600,12 @@ export default function Schedule() {
                   <div className={styles.headerCell}>Day / Shift</div>
                   {currentWeekDays.map(day => {
                     const dayOfWeek = getDayOfWeek(day, displayMonth, displayYear);
-                    const isWeekend = dayOfWeek === 5 || dayOfWeek === 6; 
+                    const isWeekend = dayOfWeek === 5 || dayOfWeek === 6;
                     const isClosed = !scheduleByDay[day];
-                    
+
                     return (
-                      <div 
-                        key={day} 
+                      <div
+                        key={day}
                         className={`${styles.headerCell} ${isWeekend ? styles.weekend : ''} ${isClosed ? styles.closed : ''}`}
                       >
                         <div className={styles.dayNumber}>{day}</div>
@@ -439,14 +631,14 @@ export default function Schedule() {
                         const isClosed = !scheduleByDay[day];
 
                         return (
-                          <div 
-                            key={`${day}-${shiftType}`} 
+                          <div
+                            key={`${day}-${shiftType}`}
                             className={`${styles.dayCell} ${isClosed ? styles.closedCell : ''}`}
                           >
                             {!isClosed && (
                               <>
-                                <Badge 
-                                  color={getShiftColor(shiftEmployees.length)} 
+                                <Badge
+                                  color={getShiftColor(shiftEmployees.length)}
                                   className={styles.employeeCount}
                                 >
                                   {shiftEmployees.length} staff
@@ -473,7 +665,7 @@ export default function Schedule() {
               </div>
             </div>
           </Card>
-          <ScheduleSummary summary={summary} meta={meta}/>
+          <ScheduleSummary summary={summary} meta={meta} />
         </>
       )}
     </div>
