@@ -15,6 +15,11 @@ class ShiftDefinition(BaseModel):
     length: int       # hours (usually 8 hours)
     required: int     # employees per shift
 
+class PreferenceDefinition(BaseModel):
+    employee_id: int
+    day: int
+    penalty: int
+
 
 class Rules(BaseModel):
     min_rest_hours: int = 11
@@ -28,6 +33,7 @@ class ScheduleRequest(BaseModel):
     rules: Rules
     holidays_mode: bool
     company_work_mode: Literal["every_day", "mon_fri", "mon_sat"] 
+    preferences: Optional[List[PreferenceDefinition]] = None
 
 class OneShift(BaseModel):
     shift: str
