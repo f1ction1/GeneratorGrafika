@@ -61,7 +61,7 @@ function DashboardPage() {
   if (loading) {
     return (
       <div className="dashboard-page">
-        <div className="dashboard-loading">Ładowanie...</div>
+        <div className="dashboard-loading">Loading...</div>
       </div>
     );
   }
@@ -70,8 +70,7 @@ function DashboardPage() {
     <div className="dashboard-page">
       <div className="dashboard-header">
         <div>
-          <h1 className="page-title">Witaj, {userName}!</h1>
-          <p className="page-subtitle">Co chcesz dzisiaj zrobić?</p>
+          <h1 className="page-title">Welcome, {userName}!</h1>
         </div>
       </div>
 
@@ -84,8 +83,8 @@ function DashboardPage() {
           <div className="action-icon">
             <FaUsers />
           </div>
-          <h3>Pracownicy</h3>
-          <p>Zarządzaj listą pracowników swojej firmy</p>
+          <h3>Employees</h3>
+          <p>Manage your company's employee list</p>
         </button>
 
         <button 
@@ -95,8 +94,8 @@ function DashboardPage() {
           <div className="action-icon">
             <FaCalendarAlt />
           </div>
-          <h3>Grafik</h3>
-          <p>Generuj i przeglądaj harmonogram pracy</p>
+          <h3>Schedule</h3>
+          <p>Generate and view work schedules</p>
         </button>
 
         <button 
@@ -106,8 +105,8 @@ function DashboardPage() {
           <div className="action-icon">
             <FaChartLine />
           </div>
-          <h3>Dane firmy</h3>
-          <p>Zarządzaj informacjami o Twojej firmie</p>
+          <h3>Company details</h3>
+          <p>Manage information about your company</p>
         </button>
 
         <button 
@@ -117,8 +116,8 @@ function DashboardPage() {
           <div className="action-icon">
             <FaCog />
           </div>
-          <h3>Profil</h3>
-          <p>Ustawienia konta i preferencje</p>
+          <h3>Profile</h3>
+          <p>Account settings</p>
         </button>
       </div>
     </div>
