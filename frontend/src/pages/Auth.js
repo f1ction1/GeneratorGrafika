@@ -74,7 +74,7 @@ function AuthPage() {
       } else if (!isLogin) {
         // Rejestracja
         if (formData.password !== formData.confirmPassword) {
-          setError('Hasła nie pasują do siebie');
+          setError('The passwords do not match.');
           setLoading(false);
           return;
         }
@@ -96,7 +96,7 @@ function AuthPage() {
 
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.detail || 'Rejestracja nie powiodła się');
+          throw new Error(errorData.detail || 'Registration failed');
         }
 
         const data = await response.json();
@@ -122,7 +122,7 @@ function AuthPage() {
 
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.detail || 'Logowanie nie powiodło się');
+          throw new Error(errorData.detail || 'Login failed');
         }
 
         const data = await response.json();
@@ -181,14 +181,14 @@ function AuthPage() {
         <div className="auth-card">
           <div className="auth-header">
             <h1 className="auth-title">
-              {isResetMode ? 'Reset hasła' : (isLogin ? 'Witaj ponownie!' : 'Dołącz do nas')}
+              {isResetMode ? 'Passowrd reset' : (isLogin ? 'Welcome back!' : 'Join us')}
             </h1>
             <p className="auth-subtitle">
               {isResetMode 
-                ? 'Wprowadź swój email, aby otrzymać link resetujący'
+                ? 'Type your email to get reset your passowrd'
                 : (isLogin 
-                  ? 'Zaloguj się, aby kontynuować' 
-                  : 'Stwórz konto i zacznij korzystać z Schedulr')}
+                  ? 'Sign in to continue' 
+                  : 'Create account and start using Schedulr')}
             </p>
           </div>
 
@@ -220,7 +220,7 @@ function AuthPage() {
             {!isLogin && !isResetMode && (
               <>
                 <div className="form-group">
-                  <label htmlFor="firstName">Imię</label>
+                  <label htmlFor="firstName">First name</label>
                   <input 
                     type="text" 
                     id="firstName" 
@@ -231,7 +231,7 @@ function AuthPage() {
                   />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="lastName">Nazwisko</label>
+                  <label htmlFor="lastName">Last name</label>
                   <input 
                     type="text" 
                     id="lastName" 
@@ -249,7 +249,7 @@ function AuthPage() {
               <input 
                 type="email" 
                 id="email" 
-                placeholder="twoj@email.com"
+                placeholder="your@email.com"
                 value={formData.email}
                 onChange={handleInputChange}
                 required
@@ -259,7 +259,7 @@ function AuthPage() {
             {!isResetMode && (
               <>
                 <div className="form-group">
-                  <label htmlFor="password">Hasło</label>
+                  <label htmlFor="password">Password</label>
                   <input 
                     type="password" 
                     id="password" 
@@ -272,7 +272,7 @@ function AuthPage() {
 
                 {!isLogin && (
                   <div className="form-group">
-                    <label htmlFor="confirmPassword">Potwierdź hasło</label>
+                    <label htmlFor="confirmPassword">Confirm password</label>
                     <input 
                       type="password" 
                       id="confirmPassword" 
@@ -290,16 +290,16 @@ function AuthPage() {
               <div className="form-extras">
                 <label className="checkbox-label">
                   <input type="checkbox" />
-                  <span>Zapamiętaj mnie</span>
+                  <span>Remember me</span>
                 </label>
                 <button type="button" onClick={toggleResetMode} className="forgot-password">
-                  Zapomniałeś hasła?
+                  Forgot password?
                 </button>
               </div>
             )}
 
             <button type="submit" className="btn btn-primary btn-full" disabled={loading}>
-              {loading ? 'Ładowanie...' : (isResetMode ? 'Wyślij link resetujący' : (isLogin ? 'Zaloguj się' : 'Zarejestruj się'))}
+              {loading ? 'Loading...' : (isResetMode ? 'Send password reset' : (isLogin ? 'Sign in' : 'Sign up'))}
             </button>
 
             {isResetMode && (
@@ -309,7 +309,7 @@ function AuthPage() {
                 className="btn btn-full"
                 style={{ marginTop: '10px', background: 'rgba(255,255,255,0.1)', color: 'white' }}
               >
-                Powrót do logowania
+                Back to login
               </button>
             )}
           </form>
@@ -317,10 +317,10 @@ function AuthPage() {
           {!isResetMode && (
             <div className="auth-footer">
               <p>
-                {isLogin ? 'Nie masz konta?' : 'Masz już konto?'}
+                {isLogin ? "Don't have account yet?" : 'Already have account?'}
                 {' '}
                 <button type="button" onClick={toggleMode} className="link-button">
-                  {isLogin ? 'Zarejestruj się' : 'Zaloguj się'}
+                  {isLogin ? 'Sign up' : 'Sign in'}
                 </button>
               </p>
             </div>

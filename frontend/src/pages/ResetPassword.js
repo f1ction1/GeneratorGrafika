@@ -17,7 +17,7 @@ function ResetPasswordPage() {
   useEffect(() => {
     const tokenParam = searchParams.get('token');
     if (!tokenParam) {
-      setError('Brak tokenu resetującego. Link jest nieprawidłowy.');
+      setError('No reset token. The link is invalid.');
     } else {
       setToken(tokenParam);
     }
@@ -37,13 +37,13 @@ function ResetPasswordPage() {
     setLoading(true);
 
     if (!token) {
-      setError('Brak tokenu resetującego.');
+      setError('No reset token.');
       setLoading(false);
       return;
     }
 
     if (formData.newPassword !== formData.confirmPassword) {
-      setError('Hasła nie pasują do siebie');
+      setError('The passwords do not match.');
       setLoading(false);
       return;
     }
@@ -63,10 +63,10 @@ function ResetPasswordPage() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.detail || 'Nie udało się zresetować hasła');
+        throw new Error(errorData.detail || 'Unable to reset password');
       }
 
-      setSuccessMessage('Hasło zostało zmienione! Przekierowanie do logowania...');
+      setSuccessMessage('Your password has been changed! Redirecting to login...');
       setTimeout(() => {
         navigate('/auth');
       }, 2000);
@@ -89,8 +89,8 @@ function ResetPasswordPage() {
       <div className="auth-container">
         <div className="auth-card">
           <div className="auth-header">
-            <h1 className="auth-title">Ustaw nowe hasło</h1>
-            <p className="auth-subtitle">Wprowadź swoje nowe hasło poniżej</p>
+            <h1 className="auth-title">Set a new password</h1>
+            <p className="auth-subtitle">Enter your new password below</p>
           </div>
 
           <form className="auth-form" onSubmit={handleSubmit}>
@@ -119,7 +119,7 @@ function ResetPasswordPage() {
             )}
 
             <div className="form-group">
-              <label htmlFor="newPassword">Nowe hasło</label>
+              <label htmlFor="newPassword">New password</label>
               <input 
                 type="password" 
                 id="newPassword" 
@@ -132,7 +132,7 @@ function ResetPasswordPage() {
             </div>
 
             <div className="form-group">
-              <label htmlFor="confirmPassword">Potwierdź nowe hasło</label>
+              <label htmlFor="confirmPassword">Confirm new password</label>
               <input 
                 type="password" 
                 id="confirmPassword" 
@@ -145,15 +145,15 @@ function ResetPasswordPage() {
             </div>
 
             <button type="submit" className="btn btn-primary btn-full" disabled={loading || !token}>
-              {loading ? 'Resetowanie...' : 'Zmień hasło'}
+              {loading ? 'Reset...' : 'Change password'}
             </button>
           </form>
 
           <div className="auth-footer">
             <p>
-              Pamiętasz hasło?{' '}
+              Remember password?{' '}
               <button type="button" onClick={() => navigate('/auth')} className="link-button">
-                Wróć do logowania
+                Sign in
               </button>
             </p>
           </div>

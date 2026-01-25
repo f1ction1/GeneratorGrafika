@@ -14,15 +14,16 @@ function HomePage() {
       <div className="content-wrapper">
         <header className="hero-section">
           <h1 className="hero-title">
-            Inteligentne generowanie
-            <span className="highlight"> harmonogramów</span>
+            Intelligent 
+            <span className="highlight"> schedule </span>
+            generation
           </h1>
           <p className="hero-subtitle">
-            Generuj optymalne plany pracy w kilka sekund — oszczędzaj czas, unikaj konfliktów i maksymalizuj wykorzystanie zasobów.
+            Generate optimal work schedules in seconds — save time, avoid conflicts, and maximize resource utilization.
           </p>
           <div className="cta-buttons">
-            <Link to="/auth" className="btn btn-primary">Zacznij Teraz</Link>
-            <button className="btn btn-secondary">Dowiedz się więcej</button>
+            <Link to="/auth" className="btn btn-primary">Start now</Link>
+            <button className="btn btn-secondary">Learn more</button>
           </div>
         </header>
 
@@ -31,24 +32,24 @@ function HomePage() {
             <div className="feature-icon">
               <FaRocket size={40} />
             </div>
-            <h3>Szybka optymalizacja</h3>
-            <p>Generuj harmonogramy w kilka sekund z uwzględnieniem dostępności, priorytetów i kompetencji.</p>
+            <h3>Fast optimization</h3>
+            <p>Generate schedules in seconds, taking into account availability, priorities, and competencies.</p>
           </div>
           
           <div className="feature-card">
             <div className="feature-icon">
               <FaSliders size={40} />
             </div>
-            <h3>Elastyczne reguły</h3>
-            <p>Dodaj urlopy, ograniczenia godzinowe, umiejętności i preferencje — system uwzględni je automatycznie.</p>
+            <h3>Flexible rules</h3>
+            <p>Add vacations, time restrictions, skills, and preferences — the system will automatically take them into account.</p>
           </div>
           
           <div className="feature-card">
             <div className="feature-icon">
               <FaChartLine size={40} />
             </div>
-            <h3>Wgląd i raporty</h3>
-            <p>Analizy wykorzystania zasobów, wykrywanie konfliktów i rekomendacje do poprawy grafiku.</p>
+            <h3>Insights and reports</h3>
+            <p>Resource utilization analysis, conflict detection, and recommendations for schedule improvement.</p>
           </div>
         </section>
       </div>

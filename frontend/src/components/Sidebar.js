@@ -124,7 +124,7 @@ function Sidebar() {
           {/* Logout Button */}
           <button onClick={handleLogout} className="nav-item logout-button">
             <FaSignOutAlt className="nav-icon" />
-            {isOpen && <span>Wyloguj</span>}
+            {isOpen && <span>Logout</span>}
           </button>
         </nav>
 
