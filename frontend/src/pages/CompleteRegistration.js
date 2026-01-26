@@ -45,12 +45,12 @@ function CompleteRegistrationPage() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.detail || 'Nie udało się utworzyć firmy');
+        throw new Error(errorData.detail || 'Failed to create company');
       }
 
-      // Rejestracja zakończona pomyślnie, przekieruj do dashboard
+      // Registration completed successfully, redirect to dashboard
       navigate('/dashboard');
-      
+
     } catch (err) {
       setError(err.message);
     } finally {
@@ -65,7 +65,7 @@ function CompleteRegistrationPage() {
         <div className="gradient-orb orb-2"></div>
         <div className="gradient-orb orb-3"></div>
       </div>
-      
+
       <div className="complete-registration-container">
         <div className="complete-registration-card">
           <div className="complete-registration-header">
@@ -75,10 +75,10 @@ function CompleteRegistrationPage() {
               </svg>
             </div>
             <h1 className="complete-registration-title">
-              Dokończ rejestrację
+              Complete registration
             </h1>
             <p className="complete-registration-subtitle">
-              Aby korzystać z pełni możliwości aplikacji, musisz utworzyć profil swojej firmy
+              To access all features of the application, you need to create your company profile
             </p>
           </div>
 
@@ -91,18 +91,18 @@ function CompleteRegistrationPage() {
                 {error}
               </div>
             )}
-            
+
             <div className="form-group">
               <label htmlFor="name">
                 <svg className="label-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                 </svg>
-                Nazwa firmy
+                Company name
               </label>
               <input 
                 type="text" 
                 id="name" 
-                placeholder="np. Moja Firma Sp. z o.o."
+                placeholder="e.g. My Company Ltd."
                 value={formData.name}
                 onChange={handleInputChange}
                 required
@@ -116,11 +116,11 @@ function CompleteRegistrationPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
-                Adres firmy
+                Company address
               </label>
               <textarea 
                 id="address" 
-                placeholder="ul. Przykładowa 123&#10;00-000 Miasto"
+                placeholder={`Example Street 123\n00-000 City`}
                 value={formData.address}
                 onChange={handleInputChange}
                 required
@@ -133,14 +133,14 @@ function CompleteRegistrationPage() {
               {loading ? (
                 <>
                   <span className="spinner"></span>
-                  Tworzenie firmy...
+                  Creating company...
                 </>
               ) : (
                 <>
                   <svg className="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  Utwórz firmę i przejdź dalej
+                  Create company and continue
                 </>
               )}
             </button>
@@ -151,7 +151,8 @@ function CompleteRegistrationPage() {
               <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
             </svg>
             <p>
-              Po utworzeniu firmy będziesz mógł zarządzać pracownikami, tworzyć grafiki i korzystać ze wszystkich funkcji aplikacji.
+              After creating your company, you will be able to manage employees,
+              create schedules, and use all application features.
             </p>
           </div>
         </div>
