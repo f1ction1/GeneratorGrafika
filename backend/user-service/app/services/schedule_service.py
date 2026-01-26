@@ -169,7 +169,7 @@ class ScheduleService:
         # Map internal day index (0..D-1) to actual day of the month
         day_idx_to_actual = {idx: days_list[idx] for idx in range(D)}
 
-        # Нужно для преобразования (employee_id, day) -> (e_idx, di)
+        # Needed to map (employee_id, day) -> (e_idx, di)
         actual_to_di = {actual_day: di for di, actual_day in day_idx_to_actual.items()}
         emp_id_to_idx = {emp.id: idx for idx, emp in enumerate(employees)}
         
@@ -252,10 +252,10 @@ class ScheduleService:
         print("DEBUG request:", request)
 
 
-        DEFAULT_DAY_OFF_PENALTY = 50
+        DEFAULT_DAY_OFF_priority = 50
 
         for req in preferences:
-            # поддержка pydantic или dict
+            # Support both Pydantic models and plain dicts
             employee_id = getattr(req, "employee_id", None)
             day_1based = getattr(req, "day", None)
 
@@ -270,7 +270,7 @@ class ScheduleService:
                 "reason": None
             }
 
-            # валидация
+            # Validation
             if not employee_id or not day_1based:
                 info["reason"] = "invalid_payload"
                 day_off_meta.append(info)
@@ -286,29 +286,29 @@ class ScheduleService:
                 continue
 
             if di is None:
-                # день не планируется (например, выходной по режиму)
+                # The day is not scheduled (e.g., it's a non-working day based on the selected work mode)
                 info["reason"] = "day_not_scheduled_by_mode"
                 day_off_meta.append(info)
                 continue
 
-            # 0/1: работает ли сотрудник в этот день
+            # 0/1: whether the employee works on that day
             worked_that_day = sum(x[(e_idx, di, s)] for s in range(S))
-            req_penalty = getattr(req, "penalty", None)
+            req_priority = getattr(req, "priority", None)
             if isinstance(req, dict):
-                req_penalty = req_penalty if req_penalty is not None else req.get("penalty")
+                req_priority = req_priority if req_priority is not None else req.get("priority")
 
-            # дефолт 50 если не передали
+            # Default to 50 if not provided
             try:
-                req_penalty = int(req_penalty) if req_penalty is not None else 50
+                req_priority = int(req_priority) if req_priority is not None else 50
             except Exception:
-                req_penalty = 50
+                req_priority = 50
 
-            penalties.append(req_penalty * worked_that_day)
-            # фиксированный штраф
-            # penalties.append(DEFAULT_DAY_OFF_PENALTY * worked_that_day)
+            penalties.append(req_priority * worked_that_day)
+            # Fixed priority
+            # penalties.append(DEFAULT_DAY_OFF_priority * worked_that_day)
 
             info["applied"] = True
-            info["reason"] = "soft_penalty_added"
+            info["reason"] = "soft_priority_added"
             day_off_meta.append(info)
 
             

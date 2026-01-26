@@ -56,13 +56,13 @@ export async function action({ request }) {
         console.log("employee_id", employee_id);
         const day = formData.get(`pref_${i}_day`);
         console.log("day", day);
-        const penalty = formData.get(`pref_${i}_penalty`);
+        const priority = formData.get(`pref_${i}_priority`);
 
         if (employee_id && day) {
           preferences.push({
             employee_id: parseInt(employee_id),
             day: parseInt(day),
-            penalty: parseInt(penalty || '50'),
+            priority: parseInt(priority || '50'),
           });
         }
       }
@@ -161,7 +161,7 @@ export default function Schedule() {
   const addPreference = () => {
     setPreferences(prev => [
       ...prev,
-      { employee_id: '', day: 1, penalty: 50 }
+      { employee_id: '', day: 1, priority: 50 }
     ]);
   };
 
@@ -517,29 +517,29 @@ export default function Schedule() {
                         </select>
                       </div>
                       <div className={styles.formGroup}>
-                        <label>Penalty</label>
+                        <label>Priority</label>
                         <input
                           type="number"
                           className={styles.formInput}
                           min="0"
                           max="1000"
                           step="1"
-                          value={pref.penalty ?? 50}
-                          onChange={(e) => updatePreference(index, 'penalty', parseInt(e.target.value || '0', 10))}
+                          value={pref.priority ?? 50}
+                          onChange={(e) => updatePreference(index, 'priority', parseInt(e.target.value || '0', 10))}
                           required
                         />
                       </div>
                     </div>
 
-                    {/* скрытые инпуты чтобы это ушло в action() */}
+                    {/* Hidden inputs so values are included in the action() form submission */}
                     <input type="hidden" name={`pref_${index}_employee_id`} value={pref.employee_id} />
                     <input type="hidden" name={`pref_${index}_day`} value={pref.day} />
-                    <input type="hidden" name={`pref_${index}_penalty`} value={pref.penalty ?? 50} />
+                    <input type="hidden" name={`pref_${index}_priority`} value={pref.priority ?? 50} />
                   </div>
                 ))
               )}
 
-              {/* сколько пожеланий всего */}
+              {/* Total number of preferences */}
               <input type="hidden" name="pref_count" value={preferences.length} />
             </div>
 
@@ -557,7 +557,7 @@ export default function Schedule() {
         </Card>
       )}
 
-      {/* Schedule Display - Показуємо ТІЛЬКИ якщо є scheduleData */}
+      {/* Schedule Display — show ONLY if scheduleData exists */}
       {hasSchedule && (
         <>
           <Card>

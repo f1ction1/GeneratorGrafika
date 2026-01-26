@@ -18,7 +18,7 @@ class ShiftDefinition(BaseModel):
 class PreferenceDefinition(BaseModel):
     employee_id: int
     day: int
-    penalty: int
+    priority: int
 
 
 class Rules(BaseModel):
