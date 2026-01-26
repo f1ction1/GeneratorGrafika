@@ -147,6 +147,8 @@ class ScheduleService:
         year = request.year
         month = request.month
         rules = request.rules
+        preferences = request.preferences
+        # preferences = getattr(request, "preferences", None) or []
 
         # 1. Determine calendar days
         days_in_month = calendar.monthrange(year, month)[1]
@@ -166,6 +168,10 @@ class ScheduleService:
 
         # Map internal day index (0..D-1) to actual day of the month
         day_idx_to_actual = {idx: days_list[idx] for idx in range(D)}
+
+        # Needed to map (employee_id, day) -> (e_idx, di)
+        actual_to_di = {actual_day: di for di, actual_day in day_idx_to_actual.items()}
+        emp_id_to_idx = {emp.id: idx for idx, emp in enumerate(employees)}
         
         # --- Variables ---
         # x[employee, day_index, shift] -> boolean decision variable
@@ -239,9 +245,78 @@ class ScheduleService:
 
             deviations_hours.append(dev_h)
 
-        # Minimize the sum of hourly deviations across all employees
-        model.Minimize(sum(deviations_hours))
+        # --- Soft penalties: day off requests (additional option) ---
+        penalties = []
+        day_off_meta = []
 
+        print("DEBUG request:", request)
+
+
+        DEFAULT_DAY_OFF_priority = 50
+
+        for req in preferences:
+            # Support both Pydantic models and plain dicts
+            employee_id = getattr(req, "employee_id", None)
+            day_1based = getattr(req, "day", None)
+
+            if isinstance(req, dict):
+                employee_id = employee_id or req.get("employee_id")
+                day_1based = day_1based or req.get("day")
+
+            info = {
+                "employee_id": employee_id,
+                "day": day_1based,
+                "applied": False,
+                "reason": None
+            }
+
+            # Validation
+            if not employee_id or not day_1based:
+                info["reason"] = "invalid_payload"
+                day_off_meta.append(info)
+                continue
+
+            e_idx = emp_id_to_idx.get(int(employee_id))
+            actual_day_0based = int(day_1based) - 1
+            di = actual_to_di.get(actual_day_0based)
+
+            if e_idx is None:
+                info["reason"] = "employee_not_found"
+                day_off_meta.append(info)
+                continue
+
+            if di is None:
+                # The day is not scheduled (e.g., it's a non-working day based on the selected work mode)
+                info["reason"] = "day_not_scheduled_by_mode"
+                day_off_meta.append(info)
+                continue
+
+            # 0/1: whether the employee works on that day
+            worked_that_day = sum(x[(e_idx, di, s)] for s in range(S))
+            req_priority = getattr(req, "priority", None)
+            if isinstance(req, dict):
+                req_priority = req_priority if req_priority is not None else req.get("priority")
+
+            # Default to 50 if not provided
+            try:
+                req_priority = int(req_priority) if req_priority is not None else 50
+            except Exception:
+                req_priority = 50
+
+            penalties.append(req_priority * worked_that_day)
+            # Fixed priority
+            # penalties.append(DEFAULT_DAY_OFF_priority * worked_that_day)
+
+            info["applied"] = True
+            info["reason"] = "soft_priority_added"
+            day_off_meta.append(info)
+
+            
+        # Minimize the sum of hourly deviations across all employees
+        W_HOURS = 2
+        model.Minimize(W_HOURS * sum(deviations_hours) + sum(penalties))
+        # sum_deviations_hours = int(sum(deviations_hours))
+        print(deviations_hours)
         # --- Solve ---
         solver = cp_model.CpSolver()
         solver.parameters.max_time_in_seconds = 300
@@ -298,6 +373,7 @@ class ScheduleService:
             "scheduled_days_count": scheduled_days_count,
             "full_time_hours_used": full_time_hours,
             "max_hours_per_employee": max_hours_per_employee,
+            "preferences": day_off_meta,
         }
 
         return {"schedule": schedule, "summary": summary, "meta": meta}
